@@ -17,9 +17,9 @@ logging in project's .todo directory
 # --all option given list with checked item
 > todo list [--all]
 # then return...
-id  |  message           |  start       |  end
-1   |  my todo text      |  Today       |   -
-2   |  second todo text  |  2019-02-15  |  2019-02-18
+id  |  name  |  message           |  start       |  end
+1   |  -     |  my todo text      |  Today       |   -
+2   |  -     |  second todo text  |  2019-02-15  |  2019-02-18
 
 # complete todo
 > todo check "my todo text"

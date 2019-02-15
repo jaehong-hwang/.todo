@@ -1,22 +1,27 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 )
 
 func main() {
-	// get command argument
-	command := os.Args[1]
-
 	// check command
-	log.Println(command)
+	switch command := os.Args[1]; command {
+	case "init":
+		err := InitTodoCollection()
+		if err != nil {
+			fmt.Printf(err.Error())
+		} else {
+			fmt.Println("todo collection intialized!")
+		}
+	default:
+		// make todo collection
+		collection, err := NewTodoCollection()
+		if err != nil {
+			fmt.Printf(err.Error())
+		}
 
-	// make todo collection
-	collection := TodoCollection{}
-
-	// check is todo directory
-	if command != "init" && !collection.HasTodoDir() {
-		log.Fatalf("You should run init first")
+		fmt.Println(collection.Dir)
 	}
 }
