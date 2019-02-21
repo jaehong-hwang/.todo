@@ -10,8 +10,12 @@ func main() {
 	command := os.Args[1]
 
 	// run command
-	collection := TodoCollection{}
-	err := collection.Run(command, os.Args[1:])
+	app, err := NewApp()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	err = app.Run(command, os.Args[1:])
 	if err != nil {
 		fmt.Println(err.Error())
 	}
