@@ -2,9 +2,11 @@ package main
 
 import (
 	"errors"
-	"log"
 	"os"
 	"path/filepath"
+	"reflect"
+
+	"github.com/iancoleman/strcase"
 )
 
 // TodoDirName is name of todo collection directory
@@ -12,7 +14,7 @@ const TodoDirName string = ".todo"
 
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
-	Dir string
+	dir string
 }
 
 // Run comand
@@ -21,33 +23,31 @@ func (t *TodoCollection) Run(command string, args []string) error {
 		return t.Init()
 	}
 
-	dir, err := os.Getwd()
-	if err != nil {
-		return err
+	command = strcase.ToCamel(command)
+
+	_, ok := reflect.TypeOf(t).MethodByName(command)
+	if !ok {
+		return errors.New(command + " is invalid command")
 	}
 
-	todoDir, err := t.getTodoDir(dir)
-	if err != nil {
-		return err
-	}
-
-	if todoDir == dir+"/"+TodoDirName {
-		return errors.New("todo collection already exists")
-	}
-
-	t.Dir = dir
+	method := reflect.ValueOf(t).MethodByName(command)
+	method.Call([]reflect.Value{})
 
 	return nil
 }
 
 // Init todo collection directory
 func (t *TodoCollection) Init() error {
-	dir, err := os.Getwd()
+	todoDir, err := t.getTodoDir()
 	if err != nil {
 		return err
 	}
 
-	err = os.Mkdir(dir+"/"+TodoDirName, 0755)
+	if todoDir != "" {
+		return errors.New("todo collection already exists")
+	}
+
+	err = os.Mkdir(todoDir, 0755)
 	if err != nil {
 		return err
 	}
@@ -55,18 +55,45 @@ func (t *TodoCollection) Init() error {
 	return nil
 }
 
+// Add todo item
+func (t *TodoCollection) Add() error {
+	dir, err := t.getTodoDir()
+	if err != nil {
+		return err
+	}
+
+	f, err := os.OpenFile(dir+"/test", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+	_, err = f.WriteString("text")
+
+	return nil
+}
+
 // GetTodoDir return current directory has todo directory
-func (t *TodoCollection) getTodoDir(dir string) (string, error) {
-	for {
-		_, err := os.Stat(dir + "/.todo")
-		if !os.IsNotExist(err) {
-			log.Println("todo dir: ", dir+"/"+TodoDirName)
-			return dir, nil
+func (t *TodoCollection) getTodoDir() (string, error) {
+	if t.dir == "" {
+		dir, err := os.Getwd()
+		if err != nil {
+			return "", err
 		}
 
-		dir = filepath.Dir(dir)
-		if dir == "/" {
-			return dir, errors.New("todo collection doesn't exists, please run 'todo init'")
+		for {
+			_, err := os.Stat(dir + "/" + TodoDirName)
+			if !os.IsNotExist(err) {
+				t.dir = dir + "/" + TodoDirName
+				return t.dir, nil
+			}
+
+			dir = filepath.Dir(dir)
+			if dir == "/" {
+				return "", errors.New("todo collection doesn't exists, please run 'todo init'")
+			}
 		}
+	} else {
+		return t.dir, nil
 	}
 }
