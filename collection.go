@@ -12,11 +12,16 @@ type TodoCollection struct {
 
 // Init todo collection directory
 func (t *TodoCollection) Init() error {
-	if t.dir != "" {
+	dir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	if t.dir == dir {
 		return errors.New("todo collection already exists")
 	}
 
-	err := os.Mkdir(t.dir, 0755)
+	err = os.Mkdir(t.dir, 0755)
 	if err != nil {
 		return err
 	}
