@@ -1,7 +1,7 @@
 # TODO on bash
 
-todo logger in cmd
-logging in project's .todo directory
+todo logger working in bash
+they are logging in .todo directory
 
 ## commands
 
@@ -19,33 +19,30 @@ logging in project's .todo directory
 > todo add $message $start $end
 ```
 
-### Check
+### Change Status
+Change the state of work
+A todo can have the following statuses:
+* wait
+* work
+* done
 ``` shell
-# complete todo
-> todo check "my todo text"
-# or
-> todo check $todoId
+# let's work
+> todo state work $todoId
 ```
 
 ### Get
-* options: --all, --expired
+The Get command gets a list of tasks that have not completed their status by default.
+If you want to get a specific list, you can use the following options.
+* --all: Gets the all list
+* --expired: Gets the list past the end date.
+* --today: It has not been completed, and I will get what I need to do today.
+* --state=$state: Gets the tasks that fit the state
 ``` bash
 # Get todo list
 # --all option given list with checked item
 > todo list [--all, --expired]
 # then return...
-id  |  name  |  message           |  start       |  end
-1   |  -     |  my todo text      |  Today       |   -
-2   |  -     |  second todo text  |  2019-02-15  |  2019-02-18
-```
-
-### Get expired todo list
-``` shell
-# get non completed and expired todo
-> todo list --expired
-# or
-> todo expired
-id  |  name  |  message           |  start       |  end
-1   |  -     |  second todo text  |  2019-02-02  |  2019-02-13
-2   |  -     |  second todo text  |  2019-02-15  |  2019-02-18
+id  |  name  |  message           |  status     |  start       |  end
+1   |  -     |  my todo text      |  work       |  Today       |   -
+2   |  -     |  second todo text  |  wait       |  2019-02-15  |  2019-02-18
 ```
