@@ -41,6 +41,10 @@ func (t *TodoCollection) Add() error {
 		return err
 	}
 
+	Todo{
+		id: t.getId()
+	}
+
 	lines := strings.Split(string(input), "\n")
 	output := strings.Join(lines, "\n")
 	err = ioutil.WriteFile(t.file, []byte(output), 0644)
