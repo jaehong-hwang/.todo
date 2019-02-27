@@ -9,8 +9,8 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-// TodoDirName is name of todo collection directory
-const TodoDirName string = ".todo"
+// TodoFileName is name of todo collection file
+const TodoFileName string = ".todo"
 
 // App is command center
 type App struct {
@@ -19,13 +19,10 @@ type App struct {
 
 // NewApp func initial app
 func NewApp() (App, error) {
-	todoDir, err := getTodoDir()
-	if err != nil {
-		return App{}, err
-	}
+	todoFile, _ := getTodoFile()
 
 	collection := &TodoCollection{
-		dir: todoDir,
+		file: todoFile,
 	}
 
 	app := App{
@@ -51,16 +48,16 @@ func (a *App) Run(command string, args []string) error {
 }
 
 // getTodoDir return current directory has todo directory
-func getTodoDir() (string, error) {
+func getTodoFile() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
 		return "", err
 	}
 
 	for {
-		_, err := os.Stat(dir + "/" + TodoDirName)
+		_, err := os.Stat(dir + "/" + TodoFileName)
 		if !os.IsNotExist(err) {
-			return dir + "/" + TodoDirName, nil
+			return dir + "/" + TodoFileName, nil
 		}
 
 		dir = filepath.Dir(dir)

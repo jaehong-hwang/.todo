@@ -2,42 +2,51 @@ package main
 
 import (
 	"errors"
+	"io/ioutil"
+	"log"
 	"os"
+	"strings"
 )
 
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
-	dir string
+	file string
 }
 
 // Init todo collection directory
 func (t *TodoCollection) Init() error {
+	if t.file != "/" {
+		return errors.New("todo collection already exists")
+	}
+
 	dir, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 
-	if t.dir == dir {
-		return errors.New("todo collection already exists")
-	}
-
-	err = os.Mkdir(t.dir, 0755)
+	f, err := os.Create(dir + "/" + TodoFileName)
 	if err != nil {
 		return err
 	}
+
+	defer f.Close()
 
 	return nil
 }
 
 // Add todo item
 func (t *TodoCollection) Add() error {
-	f, err := os.OpenFile(t.dir+"/test", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	input, err := ioutil.ReadFile(t.file)
 	if err != nil {
 		return err
 	}
 
-	defer f.Close()
-	_, err = f.WriteString("text")
+	lines := strings.Split(string(input), "\n")
+	output := strings.Join(lines, "\n")
+	err = ioutil.WriteFile(t.file, []byte(output), 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	return nil
 }
