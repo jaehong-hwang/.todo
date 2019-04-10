@@ -6,17 +6,21 @@ import (
 )
 
 func main() {
-	// get command
-	command := os.Args[1]
+	if len(os.Args) == 1 {
+		fmt.Println("Hi, I'm Todo manager in your cli")
+	} else {
+		// get command
+		command := os.Args[1]
 
-	// run command
-	app, err := NewApp()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+		// run command
+		app, err := NewApp()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 
-	err = app.Run(command, os.Args[1:])
-	if err != nil {
-		fmt.Println(err.Error())
+		err = app.Run(command, os.Args[1:])
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 }
