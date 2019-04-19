@@ -18,9 +18,11 @@ func main() {
 			fmt.Println(err.Error())
 		}
 
-		err = app.Run(command, os.Args[1:])
+		res, err := app.Run(command, os.Args[1:])
 		if err != nil {
 			fmt.Println(err.Error())
+		} else {
+			fmt.Println(res)
 		}
 	}
 }

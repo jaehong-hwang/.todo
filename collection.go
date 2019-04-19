@@ -3,13 +3,14 @@ package main
 import (
 	"errors"
 	"os"
-	"strings"
 )
 
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
 	file  TodoFile
 	todos []Todo
+
+	Args []string
 }
 
 // Init todo collection directory
@@ -32,23 +33,22 @@ func (t *TodoCollection) Init() (string, error) {
 }
 
 // Add todo item
-func (t *TodoCollection) Add() error {
+func (t *TodoCollection) Add() (string, error) {
 	input, err := t.file.GetContent()
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	Todo{
-		id: t.getId()
-	}
+	/*t.todos = append(t.todos, Todo{
+		id: len(t.todos),
+	})*/
 
-	lines := strings.Split(input, "\n")
-	output := strings.Join(lines, "\n")
+	output := input + t.Args[0] + "\n"
 
 	err = t.file.FillContent(output)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return "add complete", nil
 }
