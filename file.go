@@ -25,7 +25,7 @@ type TodoFile struct {
 
 // IsExists todo file in current directory
 func (t *TodoFile) IsExists() bool {
-	return t.path != "/"
+	return t.path != "" && t.path != "/"
 }
 
 // GetContent from todo file
