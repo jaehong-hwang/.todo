@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 
 	"github.com/iancoleman/strcase"
@@ -32,16 +31,24 @@ func NewApp() (App, error) {
 }
 
 // Run comand
-func (a *App) Run(command string, args []string) error {
+func (a *App) Run(command string, args []string) (string, error) {
 	command = strcase.ToCamel(command)
 
 	_, ok := reflect.TypeOf(a.collection).MethodByName(command)
 	if !ok {
-		return errors.New(command + " is invalid command")
+		return "", errors.New(command + " is invalid command")
 	}
 
-	method := reflect.ValueOf(a.collection).MethodByName(command)
-	method.Call([]reflect.Value{})
+	a.collection.Args = args[1:]
 
-	return nil
+	method := reflect.ValueOf(a.collection).MethodByName(command)
+	result := method.Call([]reflect.Value{})
+
+	if err, ok := result[1].Interface().(error); ok && err != nil {
+		return "", err
+	} else if response, ok := result[0].Interface().(string); ok {
+		return response, nil
+	}
+
+	return "", errors.New("no receive responce")
 }

@@ -13,22 +13,22 @@ type TodoCollection struct {
 }
 
 // Init todo collection directory
-func (t *TodoCollection) Init() error {
+func (t *TodoCollection) Init() (string, error) {
 	if t.file.IsExists() {
-		return errors.New("todo collection already exists")
+		return "", errors.New("todo collection already exists")
 	}
 
 	dir, err := os.Getwd()
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	err = t.file.CreateFile(dir)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return "todo init complete", nil
 }
 
 // Add todo item
