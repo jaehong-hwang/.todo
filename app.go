@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/iancoleman/strcase"
@@ -14,7 +15,10 @@ type App struct {
 
 // NewApp func initial app
 func NewApp() (App, error) {
-	todoFile, _ := GetTodoFile()
+	todoFile, err := GetTodoFile()
+	if err != nil {
+		return App{}, err
+	}
 
 	collection := &TodoCollection{
 		file: todoFile,

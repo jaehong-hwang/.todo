@@ -13,6 +13,9 @@ const (
 
 	// TodoFilePermission set read permission
 	todoFilePermission os.FileMode = 0644
+
+	// TodoNotFound error message
+	todoNotFound string = "todo collection doesn't exists, please run 'todo init'"
 )
 
 // TodoFile have role todo file read, write
@@ -27,12 +30,20 @@ func (t *TodoFile) IsExists() bool {
 
 // GetContent from todo file
 func (t *TodoFile) GetContent() (string, error) {
+	if t.IsExists() == false {
+		return "", errors.New(todoNotFound)
+	}
+
 	content, err := ioutil.ReadFile(t.path)
 	return string(content), err
 }
 
 // FillContent to todo file
 func (t *TodoFile) FillContent(content string) error {
+	if t.IsExists() == false {
+		return errors.New(todoNotFound)
+	}
+
 	return ioutil.WriteFile(t.path, []byte(content), todoFilePermission)
 }
 
@@ -65,7 +76,7 @@ func GetTodoFile() (TodoFile, error) {
 
 		dir = filepath.Dir(dir)
 		if dir == "/" {
-			return TodoFile{}, errors.New("todo collection doesn't exists, please run 'todo init'")
+			return TodoFile{}, nil
 		}
 	}
 }
