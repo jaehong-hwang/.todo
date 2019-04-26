@@ -32,6 +32,11 @@ func (t *TodoCollection) Init() (string, error) {
 	return "todo init complete", nil
 }
 
+// Help command is show description for using todo app
+func (t *TodoCollection) Help() (string, error) {
+	return `Todo app helper`, nil
+}
+
 // Add todo item
 func (t *TodoCollection) Add() (string, error) {
 	input, err := t.file.GetContent()

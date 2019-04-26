@@ -36,7 +36,8 @@ func (a *App) Run(command string, args []string) (string, error) {
 
 	_, ok := reflect.TypeOf(a.collection).MethodByName(command)
 	if !ok {
-		return "", errors.New(command + " is invalid command")
+		help, _ := a.collection.Help()
+		return help, errors.New(command + " is invalid command")
 	}
 
 	a.collection.Args = args[1:]
