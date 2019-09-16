@@ -34,7 +34,12 @@ func (t *TodoCollection) Init() (string, error) {
 
 // Help command is show description for using todo app
 func (t *TodoCollection) Help() (string, error) {
-	return `Todo app helper`, nil
+	return `usage: todo [--version] <command> [<args>]
+
+Todo app helper.
+You can run the following commands.
+
+todo add ${message}	adding todo`, nil
 }
 
 // Add todo item
