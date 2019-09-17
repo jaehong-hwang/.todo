@@ -19,8 +19,9 @@ func NewApp() (App, error) {
 		return App{}, err
 	}
 
-	collection := &TodoCollection{
-		file: todoFile,
+	collection, err := NewTodoCollection(todoFile)
+	if err != nil {
+		return App{}, err
 	}
 
 	app := App{

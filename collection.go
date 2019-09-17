@@ -1,16 +1,37 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 )
 
+// Todos is todo array
+type Todos []Todo
+
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
 	file  TodoFile
-	todos []Todo
+	todos Todos
 
 	Args []string
+}
+
+// NewTodoCollection returned
+func NewTodoCollection(todoFile TodoFile) (*TodoCollection, error) {
+	input, err := todoFile.GetContent()
+	todos := Todos{}
+
+	if err == nil {
+		json.Unmarshal([]byte(input), &todos)
+	}
+
+	t := &TodoCollection{
+		file:  todoFile,
+		todos: todos,
+	}
+
+	return t, nil
 }
 
 // Init todo collection directory
@@ -39,26 +60,30 @@ func (t *TodoCollection) Help() (string, error) {
 Todo app helper.
 You can run the following commands.
 
+todo init		initial todo collection
 todo add ${message}	adding todo`, nil
 }
 
 // Add todo item
 func (t *TodoCollection) Add() (string, error) {
-	input, err := t.file.GetContent()
-	if err != nil {
-		return "", err
-	}
+	t.todos = append(t.todos, Todo{
+		ID:      len(t.todos),
+		Content: t.Args[0],
+	})
 
-	/*t.todos = append(t.todos, Todo{
-		id: len(t.todos),
-	})*/
-
-	output := input + t.Args[0] + "\n"
-
-	err = t.file.FillContent(output)
-	if err != nil {
+	if err := t.Save(); err != nil {
 		return "", err
 	}
 
 	return "add complete", nil
+}
+
+// Save todo items
+func (t *TodoCollection) Save() error {
+	b, err := json.Marshal(t.todos)
+	if err != nil {
+		return err
+	}
+
+	return t.file.FillContent(string(b))
 }

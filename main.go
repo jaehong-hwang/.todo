@@ -17,12 +17,16 @@ func main() {
 	app, err := NewApp()
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 
 	res, err := app.Run(command, os.Args[1:])
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 
-	fmt.Println(res)
+	if res != "" {
+		fmt.Println(res)
+	}
 }
