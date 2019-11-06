@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/ryanuber/columnize"
 )
 
 // Todos is todo array
@@ -70,22 +71,23 @@ todo add ${message}	adding todo`, nil
 // List of todo items
 func (t *TodoCollection) List() (string, error) {
 	var fields []string
+	var output []string
 
 	val := reflect.Indirect(reflect.ValueOf(Todo{}))
 	for i := 0; i < val.NumField(); i++ {
 		fields = append(fields, val.Type().Field(i).Name)
 	}
 
-	fmt.Println(strings.Join(fields[:], "\t "))
+	output = append(output, strings.Join(fields[:], " | "))
 	for _, todo := range t.todos {
+		var fieldText []string
 		for _, field := range fields {
-			fmt.Printf("%v\t", reflect.Indirect(reflect.ValueOf(todo)).FieldByName(field).Interface())
-
+			fieldText = append(fieldText, reflect.Indirect(reflect.ValueOf(todo)).FieldByName(field).String())
 		}
-		fmt.Printf("\n")
+		output = append(output, strings.Join(fieldText[:], " | "))
 	}
 
-	return "", nil
+	return columnize.SimpleFormat(output), nil
 }
 
 // Add todo item
