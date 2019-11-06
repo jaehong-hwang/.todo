@@ -71,15 +71,15 @@ func (t *TodoCollection) Add() (string, error) {
 		Content: t.Args[0],
 	})
 
-	if err := t.Save(); err != nil {
+	if err := t.save(); err != nil {
 		return "", err
 	}
 
 	return "add complete", nil
 }
 
-// Save todo items
-func (t *TodoCollection) Save() error {
+// save todo items
+func (t *TodoCollection) save() error {
 	b, err := json.Marshal(t.todos)
 	if err != nil {
 		return err
