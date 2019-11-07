@@ -42,7 +42,12 @@ If you want to get a specific list, you can use the following options.
 # --all option given list with checked item
 > todo list [--all, --expired]
 # then return...
-id  |  name  |  message           |  status     |  start       |  end
-1   |  -     |  my todo text      |  work       |  Today       |   -
-2   |  -     |  second todo text  |  wait       |  2019-02-15  |  2019-02-18
+id  |  name  |  message           | status   |  start       |  end
+1   |  -     |  my todo text      | work     |  Today       |   -
+2   |  -     |  second todo text  | waiting  |  2019-02-15  |  2019-02-18
+
+# complete todo
+> todo check "my todo text"
+# or
+> todo check $todoId
 ```
