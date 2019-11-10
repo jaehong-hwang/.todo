@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
 	"strings"
@@ -82,7 +83,8 @@ func (t *TodoCollection) List() (string, error) {
 	for _, todo := range t.todos {
 		var fieldText []string
 		for _, field := range fields {
-			fieldText = append(fieldText, reflect.Indirect(reflect.ValueOf(todo)).FieldByName(field).String())
+			str := fmt.Sprintf("%v", reflect.Indirect(reflect.ValueOf(todo)).FieldByName(field).Interface())
+			fieldText = append(fieldText, str)
 		}
 		output = append(output, strings.Join(fieldText[:], " | "))
 	}
