@@ -13,19 +13,14 @@ type App struct {
 }
 
 // NewApp func initial app
-func NewApp() (App, error) {
+func NewApp() (*App, error) {
 	todoFile, err := GetTodoFile()
 	if err != nil {
-		return App{}, err
+		return nil, err
 	}
 
-	collection, err := NewTodoCollection(todoFile)
-	if err != nil {
-		return App{}, err
-	}
-
-	app := App{
-		collection: collection,
+	app := &App{
+		collection: NewTodoCollection(todoFile),
 	}
 
 	return app, nil

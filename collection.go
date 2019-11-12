@@ -16,14 +16,14 @@ type Todos []Todo
 
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
-	file  TodoFile
+	file  *TodoFile
 	todos Todos
 
 	Args []string
 }
 
 // NewTodoCollection returned
-func NewTodoCollection(todoFile TodoFile) (*TodoCollection, error) {
+func NewTodoCollection(todoFile *TodoFile) *TodoCollection {
 	input, err := todoFile.GetContent()
 	todos := Todos{}
 
@@ -31,12 +31,10 @@ func NewTodoCollection(todoFile TodoFile) (*TodoCollection, error) {
 		json.Unmarshal([]byte(input), &todos)
 	}
 
-	t := &TodoCollection{
+	return &TodoCollection{
 		file:  todoFile,
 		todos: todos,
 	}
-
-	return t, nil
 }
 
 // Init todo collection directory
