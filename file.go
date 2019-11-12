@@ -30,20 +30,12 @@ func (t *TodoFile) IsExists() bool {
 
 // GetContent from todo file
 func (t *TodoFile) GetContent() (string, error) {
-	if t.IsExists() == false {
-		return "", errors.New(todoNotFound)
-	}
-
 	content, err := ioutil.ReadFile(t.path)
 	return string(content), err
 }
 
 // FillContent to todo file
 func (t *TodoFile) FillContent(content string) error {
-	if t.IsExists() == false {
-		return errors.New(todoNotFound)
-	}
-
 	return ioutil.WriteFile(t.path, []byte(content), todoFilePermission)
 }
 
@@ -74,9 +66,10 @@ func GetTodoFile() (*TodoFile, error) {
 			}, nil
 		}
 
-		dir = filepath.Dir(dir)
 		if dir == "/" {
-			return nil, nil
+			return nil, errors.New(todoNotFound)
 		}
+
+		dir = filepath.Dir(dir)
 	}
 }

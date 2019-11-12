@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"reflect"
@@ -38,37 +37,37 @@ func NewTodoCollection(todoFile *TodoFile) *TodoCollection {
 }
 
 // Init todo collection directory
-func (t *TodoCollection) Init() (string, error) {
+func (t *TodoCollection) Init() {
 	if t.file.IsExists() {
-		return "", errors.New("todo collection already exists")
+		panic("todo collection already exists")
 	}
 
 	dir, err := os.Getwd()
 	if err != nil {
-		return "", err
+		panic(err)
 	}
 
 	err = t.file.CreateFile(dir)
 	if err != nil {
-		return "", err
+		panic(err)
 	}
 
-	return "todo init complete", nil
+	ResponseChan <- &MessageResponse{message: "todo init complete"}
 }
 
 // Help command is show description for using todo app
-func (t *TodoCollection) Help() (string, error) {
-	return `usage: todo [--version] <command> [<args>]
+func (t *TodoCollection) Help() {
+	ResponseChan <- &MessageResponse{message: `usage: todo [--version] <command> [<args>]
 
 Todo app helper.
 You can run the following commands.
 
 todo init		initial todo collection
-todo add ${message}	adding todo`, nil
+todo add ${message}	adding todo`}
 }
 
 // List of todo items
-func (t *TodoCollection) List() (string, error) {
+func (t *TodoCollection) List() {
 	var fields []string
 	var output []string
 
@@ -87,21 +86,21 @@ func (t *TodoCollection) List() (string, error) {
 		output = append(output, strings.Join(fieldText[:], " | "))
 	}
 
-	return columnize.SimpleFormat(output), nil
+	ResponseChan <- &MessageResponse{message: columnize.SimpleFormat(output)}
 }
 
 // Add todo item
-func (t *TodoCollection) Add() (string, error) {
+func (t *TodoCollection) Add() {
 	t.todos = append(t.todos, Todo{
 		ID:      len(t.todos),
 		Content: t.Args[0],
 	})
 
 	if err := t.save(); err != nil {
-		return "", err
+		panic(err)
 	}
 
-	return "add complete", nil
+	ResponseChan <- &MessageResponse{message: "add complete"}
 }
 
 // save todo items

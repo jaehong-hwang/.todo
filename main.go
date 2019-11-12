@@ -1,32 +1,30 @@
 package main
 
 import (
-	"fmt"
 	"os"
+	"sync"
 )
+
+// ResponseChan for main app
+var ResponseChan chan Response
 
 func main() {
 	if len(os.Args) <= 1 {
 		os.Args = append(os.Args, "help")
 	}
 
+	var wg sync.WaitGroup
+
+	// set ResponseChan
+	ResponseChan = make(chan Response)
+
 	// get command
 	command := os.Args[1]
 
-	// run command
-	app, err := NewApp()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	go RunCommand(command, os.Args[1:], &wg)
 
-	res, err := app.Run(command, os.Args[1:])
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	if res != "" {
-		fmt.Println(res)
+	select {
+	case response := <-ResponseChan:
+		response.Print()
 	}
 }
