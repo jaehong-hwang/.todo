@@ -2,12 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
-	"reflect"
-	"strings"
-
-	"github.com/ryanuber/columnize"
 )
 
 // Todos is todo array
@@ -68,25 +63,7 @@ todo add ${message}	adding todo`}
 
 // List of todo items
 func (t *TodoCollection) List() {
-	var fields []string
-	var output []string
-
-	val := reflect.Indirect(reflect.ValueOf(Todo{}))
-	for i := 0; i < val.NumField(); i++ {
-		fields = append(fields, val.Type().Field(i).Name)
-	}
-
-	output = append(output, strings.Join(fields[:], " | "))
-	for _, todo := range t.todos {
-		var fieldText []string
-		for _, field := range fields {
-			str := fmt.Sprintf("%v", reflect.Indirect(reflect.ValueOf(todo)).FieldByName(field).Interface())
-			fieldText = append(fieldText, str)
-		}
-		output = append(output, strings.Join(fieldText[:], " | "))
-	}
-
-	ResponseChan <- &MessageResponse{message: columnize.SimpleFormat(output)}
+	ResponseChan <- &ListResponse{todos: t.todos}
 }
 
 // Add todo item
