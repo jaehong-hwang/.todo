@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"sync"
 
 	"github.com/iancoleman/strcase"
 )
@@ -14,8 +15,10 @@ type App struct {
 }
 
 // RunCommand to running correct command
-func RunCommand(command string, args []string) {
+func RunCommand(command string, args []string, wg *sync.WaitGroup) {
 	defer func() {
+		wg.Done()
+
 		if err := recover(); err != nil {
 			fmt.Println(err)
 			runtime.Goexit()
