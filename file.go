@@ -60,23 +60,24 @@ func (t *TodoFile) CreateFile(dir string) error {
 }
 
 // GetTodoFile return current directory has todo directory
-func GetTodoFile() (TodoFile, error) {
+func GetTodoFile() (*TodoFile, error) {
 	dir, err := os.Getwd()
 	if err != nil {
-		return TodoFile{}, err
+		return nil, err
 	}
 
 	for {
 		_, err := os.Stat(dir + "/" + todoFileName)
 		if !os.IsNotExist(err) {
-			return TodoFile{
+			return &TodoFile{
 				path: dir + "/" + todoFileName,
 			}, nil
 		}
 
-		dir = filepath.Dir(dir)
 		if dir == "/" {
-			return TodoFile{}, nil
+			return &TodoFile{}, nil
 		}
+
+		dir = filepath.Dir(dir)
 	}
 }
