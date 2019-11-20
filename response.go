@@ -50,3 +50,13 @@ func (r *ListResponse) Print() {
 
 	fmt.Println(columnize.SimpleFormat(output))
 }
+
+// ErrorResponse is panic message from command process
+type ErrorResponse struct {
+	err interface{}
+}
+
+// Print error response
+func (r *ErrorResponse) Print() {
+	fmt.Println("[ERROR]", r.err)
+}

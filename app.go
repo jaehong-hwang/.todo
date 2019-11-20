@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"reflect"
 	"runtime"
 	"sync"
@@ -20,7 +19,7 @@ func RunCommand(command string, args []string, wg *sync.WaitGroup) {
 		wg.Done()
 
 		if err := recover(); err != nil {
-			fmt.Println(err)
+			ResponseChan <- &ErrorResponse{err: err}
 			runtime.Goexit()
 		}
 	}()
