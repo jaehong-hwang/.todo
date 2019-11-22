@@ -7,77 +7,77 @@ import (
 	"path/filepath"
 )
 
-const (
-	// TodoFileName is name of todo collection file
-	todoFileName string = ".todo"
-
-	// TodoFilePermission set read permission
-	todoFilePermission os.FileMode = 0644
-
-	// TodoNotFound error message
-	todoNotFound string = "todo collection doesn't exists, please run 'todo init'"
-)
-
-// TodoFile have role todo file read, write
-type TodoFile struct {
-	path string
+// File management struct
+type File struct {
+	name       string
+	permission os.FileMode
+	path       string
 }
 
 // IsExists todo file in current directory
-func (t *TodoFile) IsExists() bool {
-	return t.path != "" && t.path != "/"
+func (f *File) IsExists() bool {
+	return f.path != "" && f.path != "/"
 }
 
 // GetContent from todo file
-func (t *TodoFile) GetContent() (string, error) {
-	if t.IsExists() == false {
+func (f *File) GetContent() (string, error) {
+	if f.IsExists() == false {
 		return "", errors.New(todoNotFound)
 	}
 
-	content, err := ioutil.ReadFile(t.path)
+	content, err := ioutil.ReadFile(f.path)
 	return string(content), err
 }
 
 // FillContent to todo file
-func (t *TodoFile) FillContent(content string) error {
-	if t.IsExists() == false {
+func (f *File) FillContent(content string) error {
+	if f.IsExists() == false {
 		return errors.New(todoNotFound)
 	}
 
-	return ioutil.WriteFile(t.path, []byte(content), todoFilePermission)
+	return ioutil.WriteFile(f.path, []byte(content), f.permission)
 }
 
 // CreateFile of tood
-func (t *TodoFile) CreateFile(dir string) error {
-	f, err := os.Create(dir + "/" + todoFileName)
+func (f *File) CreateFile(dir string) error {
+	file, err := os.Create(dir + "/" + f.name)
 	if err != nil {
 		return err
 	}
 
-	defer f.Close()
+	defer file.Close()
 
 	return nil
 }
 
-// GetTodoFile return current directory has todo directory
-func GetTodoFile() (*TodoFile, error) {
+// FindFromCurrentDirectory by filename
+func (f *File) FindFromCurrentDirectory() error {
 	dir, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	for {
-		_, err := os.Stat(dir + "/" + todoFileName)
-		if !os.IsNotExist(err) {
-			return &TodoFile{
-				path: dir + "/" + todoFileName,
-			}, nil
+		path := dir + "/" + f.name
+		if err := f.SetFile(path); err == nil {
+			return nil
 		}
 
 		if dir == "/" {
-			return &TodoFile{}, nil
+			return nil
 		}
 
 		dir = filepath.Dir(dir)
 	}
+}
+
+// SetFile from path
+func (f *File) SetFile(path string) error {
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return err
+	}
+
+	f.path = path
+	return nil
 }

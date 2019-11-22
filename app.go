@@ -2,11 +2,23 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"runtime"
 	"sync"
 
 	"github.com/iancoleman/strcase"
+)
+
+const (
+	// TodoFileName is name of todo collection file
+	todoFileName string = ".todo"
+
+	// TodoFilePermission set read permission
+	todoFilePermission os.FileMode = 0644
+
+	// TodoNotFound error message
+	todoNotFound string = "todo collection doesn't exists, please run 'todo init'"
 )
 
 // App is command center
@@ -25,13 +37,13 @@ func RunCommand(command string, args []string, wg *sync.WaitGroup) {
 		}
 	}()
 
-	todoFile, err := GetTodoFile()
-	if err != nil {
+	file := &File{name: ".todo", permission: 0644}
+	if err := file.FindFromCurrentDirectory(); err != nil {
 		panic(err)
 	}
 
 	a := &App{
-		collection: NewTodoCollection(todoFile),
+		collection: NewTodoCollection(file),
 	}
 
 	command = strcase.ToCamel(command)
