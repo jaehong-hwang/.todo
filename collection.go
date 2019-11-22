@@ -10,14 +10,14 @@ type Todos []Todo
 
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
-	file  *TodoFile
+	file  *File
 	todos Todos
 
 	Args []string
 }
 
 // NewTodoCollection returned
-func NewTodoCollection(todoFile *TodoFile) *TodoCollection {
+func NewTodoCollection(todoFile *File) *TodoCollection {
 	input, err := todoFile.GetContent()
 	todos := Todos{}
 
