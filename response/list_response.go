@@ -9,21 +9,6 @@ import (
 	"github.com/ryanuber/columnize"
 )
 
-// Response interface
-type Response interface {
-	Print()
-}
-
-// MessageResponse struct
-type MessageResponse struct {
-	Message string
-}
-
-// Print message
-func (r *MessageResponse) Print() {
-	fmt.Println(r.Message)
-}
-
 // ListResponse is todo list response to string
 type ListResponse struct {
 	Todos todo.Todos
@@ -50,14 +35,4 @@ func (r *ListResponse) Print() {
 	}
 
 	fmt.Println(columnize.SimpleFormat(output))
-}
-
-// ErrorResponse struct
-type ErrorResponse struct {
-	Err error
-}
-
-// Print error with ERROR tag
-func (r *ErrorResponse) Print() {
-	fmt.Println("[ERROR]", r.Err)
 }
