@@ -1,13 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"reflect"
 	"runtime"
 	"sync"
 
-	"github.com/iancoleman/strcase"
+	"github.com/urfave/cli/v2"
 )
 
 const (
@@ -23,11 +23,78 @@ const (
 
 // App is command center
 type App struct {
+	commands   *cli.App
 	collection *TodoCollection
 }
 
-// RunCommand to running correct command
-func RunCommand(command string, args []string, wg *sync.WaitGroup) {
+// NewApp find file and returns app
+func NewApp() *App {
+	file := &File{name: ".todo", permission: 0644}
+	if err := file.FindFromCurrentDirectory(); err != nil {
+		panic(err)
+	}
+
+	collection := NewTodoCollection(file)
+
+	commands := &cli.App{
+		Name:      "todo",
+		Copyright: "(c) 2019 JaeHong Hwang",
+		HelpName:  "contrive",
+		Usage:     "",
+		UsageText: `Todo app helper, You can run the following commands.`,
+		Version:   "0.0.1",
+		Commands: []*cli.Command{
+			{
+				Name:    "list",
+				Aliases: []string{"l"},
+				Usage:   "print todos to the list",
+				Action: func(c *cli.Context) error {
+					ResponseChan <- &ListResponse{todos: collection.Todos}
+					return nil
+				},
+			},
+			{
+				Name:  "init",
+				Usage: "set up todo for current directory",
+				Action: func(c *cli.Context) error {
+					if file.IsExists() {
+						return errors.New("todo collection already exists")
+					}
+
+					dir, err := os.Getwd()
+					if err != nil {
+						return err
+					}
+
+					err = file.CreateFile(dir)
+					if err != nil {
+						return err
+					}
+
+					ResponseChan <- &MessageResponse{message: "todo init complete"}
+					return nil
+				},
+			},
+			{
+				Name:    "add",
+				Aliases: []string{"a"},
+				Usage:   "add todo",
+				Action: func(c *cli.Context) error {
+					todo := Todo{Content: c.Args().Get(0)}
+					return collection.Add(todo)
+				},
+			},
+		},
+	}
+
+	return &App{
+		collection: collection,
+		commands:   commands,
+	}
+}
+
+// Run to running correct command
+func (a *App) Run(args []string, wg *sync.WaitGroup) {
 	defer func() {
 		wg.Done()
 
@@ -37,24 +104,7 @@ func RunCommand(command string, args []string, wg *sync.WaitGroup) {
 		}
 	}()
 
-	file := &File{name: ".todo", permission: 0644}
-	if err := file.FindFromCurrentDirectory(); err != nil {
-		panic(err)
+	if err := a.commands.Run(args); err != nil {
+		ResponseChan <- &ErrorResponse{err: err}
 	}
-
-	a := &App{
-		collection: NewTodoCollection(file),
-	}
-
-	command = strcase.ToCamel(command)
-
-	_, ok := reflect.TypeOf(a.collection).MethodByName(command)
-	if !ok {
-		a.collection.Help()
-	}
-
-	a.collection.Args = args[1:]
-
-	method := reflect.ValueOf(a.collection).MethodByName(command)
-	method.Call([]reflect.Value{})
 }

@@ -18,11 +18,10 @@ func main() {
 	// set ResponseChan
 	ResponseChan = make(chan Response)
 
-	// get command
-	command := os.Args[1]
-
 	wg.Add(1)
-	go RunCommand(command, os.Args[1:], &wg)
+
+	app := NewApp()
+	go app.Run(os.Args, &wg)
 
 	go func() {
 		wg.Wait()
