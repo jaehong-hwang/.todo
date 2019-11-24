@@ -36,6 +36,12 @@ func NewApp() *App {
 	collection := NewTodoCollection(file)
 
 	commands := &cli.App{
+		Name:      "todo",
+		Copyright: "(c) 2019 JaeHong Hwang",
+		HelpName:  "contrive",
+		Usage:     "",
+		UsageText: `Todo app helper, You can run the following commands.`,
+		Version:   "0.0.1",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "lang, l",
@@ -54,7 +60,6 @@ func NewApp() *App {
 				Usage:   "print todos to the list",
 				Action: func(c *cli.Context) error {
 					ResponseChan <- &ListResponse{todos: collection.Todos}
-
 					return nil
 				},
 			},
