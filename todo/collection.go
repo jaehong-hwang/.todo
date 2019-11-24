@@ -1,7 +1,9 @@
-package main
+package todo
 
 import (
 	"encoding/json"
+
+	"github.com/jaehong-hwang/todo/file"
 )
 
 // Todos is todo array
@@ -13,7 +15,7 @@ type TodoCollection struct {
 }
 
 // NewTodoCollection returned
-func NewTodoCollection(todoFile *File) *TodoCollection {
+func NewTodoCollection(todoFile *file.File) *TodoCollection {
 	input, err := todoFile.GetContent()
 	todos := Todos{}
 

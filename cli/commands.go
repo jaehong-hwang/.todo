@@ -1,9 +1,10 @@
-package main
+package cli
 
 import (
 	"errors"
 	"os"
 
+	"github.com/jaehong-hwang/todo/response"
 	"github.com/urfave/cli/v2"
 )
 
@@ -34,7 +35,7 @@ func (a *App) GetCommands() TodoCommands {
 }
 
 func (a *App) list(c *cli.Context) error {
-	ResponseChan <- &ListResponse{todos: a.collection.Todos}
+	a.response = &response.ListResponse{Todos: a.collection.Todos}
 	return nil
 }
 
@@ -53,7 +54,7 @@ func (a *App) init(c *cli.Context) error {
 		return err
 	}
 
-	ResponseChan <- &MessageResponse{message: "todo init complete"}
+	a.response = &response.MessageResponse{Message: "todo init complete"}
 	return nil
 }
 

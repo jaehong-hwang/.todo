@@ -1,4 +1,4 @@
-package main
+package file
 
 import (
 	"errors"
@@ -7,10 +7,21 @@ import (
 	"path/filepath"
 )
 
+const (
+	// TodoFileName is name of todo collection file
+	todoFileName string = ".todo"
+
+	// TodoFilePermission set read permission
+	todoFilePermission os.FileMode = 0644
+
+	// TodoNotFound error message
+	todoNotFound string = "todo collection doesn't exists, please run 'todo init'"
+)
+
 // File management struct
 type File struct {
-	name       string
-	permission os.FileMode
+	Name       string
+	Permission os.FileMode
 	path       string
 }
 
@@ -35,12 +46,12 @@ func (f *File) FillContent(content string) error {
 		return errors.New(todoNotFound)
 	}
 
-	return ioutil.WriteFile(f.path, []byte(content), f.permission)
+	return ioutil.WriteFile(f.path, []byte(content), f.Permission)
 }
 
 // CreateFile of tood
 func (f *File) CreateFile(dir string) error {
-	file, err := os.Create(dir + "/" + f.name)
+	file, err := os.Create(dir + "/" + f.Name)
 	if err != nil {
 		return err
 	}
@@ -58,7 +69,7 @@ func (f *File) FindFromCurrentDirectory() error {
 	}
 
 	for {
-		path := dir + "/" + f.name
+		path := dir + "/" + f.Name
 		if err := f.SetFile(path); err == nil {
 			return nil
 		}

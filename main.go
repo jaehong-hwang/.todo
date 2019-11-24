@@ -2,30 +2,12 @@ package main
 
 import (
 	"os"
-	"sync"
+
+	"github.com/jaehong-hwang/todo/cli"
 )
 
-// ResponseChan for main app
-var ResponseChan chan Response
-
 func main() {
-	var wg sync.WaitGroup
+	app := cli.NewApp()
 
-	// set ResponseChan
-	ResponseChan = make(chan Response)
-
-	wg.Add(1)
-
-	app := NewApp()
-	go app.Run(os.Args, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ResponseChan)
-	}()
-
-	response := <-ResponseChan
-	if response != nil {
-		response.Print()
-	}
+	app.Run(os.Args).Print()
 }
