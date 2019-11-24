@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"runtime"
@@ -23,74 +22,33 @@ const (
 
 // App is command center
 type App struct {
-	commands   *cli.App
+	cliApp     *cli.App
 	collection *TodoCollection
+	file       *File
 }
 
 // NewApp find file and returns app
 func NewApp() *App {
-	file := &File{name: ".todo", permission: 0644}
-	if err := file.FindFromCurrentDirectory(); err != nil {
+	app := App{}
+
+	app.file = &File{name: ".todo", permission: 0644}
+	if err := app.file.FindFromCurrentDirectory(); err != nil {
 		panic(err)
 	}
 
-	collection := NewTodoCollection(file)
+	app.collection = NewTodoCollection(app.file)
 
-	commands := &cli.App{
+	app.cliApp = &cli.App{
 		Name:      "todo",
 		Copyright: "(c) 2019 JaeHong Hwang",
 		HelpName:  "contrive",
 		Usage:     "",
 		UsageText: `Todo app helper, You can run the following commands.`,
 		Version:   "0.0.1",
-		Commands: []*cli.Command{
-			{
-				Name:    "list",
-				Aliases: []string{"l"},
-				Usage:   "print todos to the list",
-				Action: func(c *cli.Context) error {
-					ResponseChan <- &ListResponse{todos: collection.Todos}
-					return nil
-				},
-			},
-			{
-				Name:  "init",
-				Usage: "set up todo for current directory",
-				Action: func(c *cli.Context) error {
-					if file.IsExists() {
-						return errors.New("todo collection already exists")
-					}
-
-					dir, err := os.Getwd()
-					if err != nil {
-						return err
-					}
-
-					err = file.CreateFile(dir)
-					if err != nil {
-						return err
-					}
-
-					ResponseChan <- &MessageResponse{message: "todo init complete"}
-					return nil
-				},
-			},
-			{
-				Name:    "add",
-				Aliases: []string{"a"},
-				Usage:   "add todo",
-				Action: func(c *cli.Context) error {
-					todo := Todo{Content: c.Args().Get(0)}
-					return collection.Add(todo)
-				},
-			},
-		},
+		Commands:  app.GetCommands(),
 	}
 
-	return &App{
-		collection: collection,
-		commands:   commands,
-	}
+	return &app
 }
 
 // Run to running correct command
@@ -104,7 +62,7 @@ func (a *App) Run(args []string, wg *sync.WaitGroup) {
 		}
 	}()
 
-	if err := a.commands.Run(args); err != nil {
+	if err := a.cliApp.Run(args); err != nil {
 		ResponseChan <- &ErrorResponse{err: err}
 	}
 }
