@@ -9,10 +9,6 @@ import (
 var ResponseChan chan Response
 
 func main() {
-	if len(os.Args) <= 1 {
-		os.Args = append(os.Args, "help")
-	}
-
 	var wg sync.WaitGroup
 
 	// set ResponseChan
