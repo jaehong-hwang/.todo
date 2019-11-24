@@ -80,8 +80,19 @@ func NewApp() *App {
 				Aliases: []string{"a"},
 				Usage:   "add todo",
 				Action: func(c *cli.Context) error {
-					todo := Todo{Content: c.Args().Get(0)}
-					return collection.Add(todo)
+					todo := collection.NewTodo()
+					todo.Content = c.Args().Get(0)
+
+					collection.Add(todo)
+
+					content, err := collection.GetTodosByJSONString()
+					if err != nil {
+						return err
+					}
+
+					file.FillContent(content)
+
+					return nil
 				},
 			},
 		},

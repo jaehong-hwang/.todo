@@ -9,7 +9,6 @@ type Todos []Todo
 
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
-	file  *File
 	Todos Todos
 }
 
@@ -23,29 +22,30 @@ func NewTodoCollection(todoFile *File) *TodoCollection {
 	}
 
 	return &TodoCollection{
-		file:  todoFile,
 		Todos: todos,
 	}
 }
 
-// Add todo item
-func (t *TodoCollection) Add(todo Todo) error {
-	todo.ID = len(t.Todos)
-	t.Todos = append(t.Todos, todo)
-
-	if err := t.save(); err != nil {
-		return err
+// NewTodo from todo list
+func (t *TodoCollection) NewTodo() Todo {
+	todo := Todo{
+		ID: len(t.Todos),
 	}
 
-	return nil
+	return todo
 }
 
-// save todo items
-func (t *TodoCollection) save() error {
+// Add todo to current collection
+func (t *TodoCollection) Add(todo Todo) {
+	t.Todos = append(t.Todos, todo)
+}
+
+// GetTodosByJSONString from current collection
+func (t *TodoCollection) GetTodosByJSONString() (string, error) {
 	b, err := json.Marshal(t.Todos)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return t.file.FillContent(string(b))
+	return string(b), nil
 }
