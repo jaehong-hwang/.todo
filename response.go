@@ -50,3 +50,13 @@ func (r *ListResponse) Print() {
 
 	fmt.Println(columnize.SimpleFormat(output))
 }
+
+// ErrorResponse struct
+type ErrorResponse struct {
+	err error
+}
+
+// Print error with ERROR tag
+func (r *ErrorResponse) Print() {
+	fmt.Println("[ERROR]", r.err)
+}
