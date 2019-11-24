@@ -42,17 +42,6 @@ func NewApp() *App {
 		Usage:     "",
 		UsageText: `Todo app helper, You can run the following commands.`,
 		Version:   "0.0.1",
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:  "lang, l",
-				Value: "english",
-				Usage: "Language for the greeting",
-			},
-			&cli.StringFlag{
-				Name:  "config, c",
-				Usage: "Load configuration from `FILE`",
-			},
-		},
 		Commands: []*cli.Command{
 			{
 				Name:    "list",
