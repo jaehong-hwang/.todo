@@ -11,7 +11,7 @@ import (
 type App struct {
 	response   response.Response
 	cliApp     *cli.App
-	collection *todo.TodoCollection
+	collection *todo.Collection
 	file       *file.File
 }
 
