@@ -83,5 +83,7 @@ func (a *App) Run(args []string, wg *sync.WaitGroup) {
 		}
 	}()
 
-	a.commands.Run(args)
+	if err := a.commands.Run(args); err != nil {
+		ResponseChan <- &ErrorResponse{err: err}
+	}
 }
