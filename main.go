@@ -22,7 +22,9 @@ func main() {
 	command := os.Args[1]
 
 	wg.Add(1)
-	go RunCommand(command, os.Args[1:], &wg)
+
+	app := NewApp()
+	go app.Run(command, os.Args[1:], &wg)
 
 	go func() {
 		wg.Wait()

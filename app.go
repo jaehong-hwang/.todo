@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/iancoleman/strcase"
+	"github.com/urfave/cli/v2"
 )
 
 const (
@@ -23,11 +24,24 @@ const (
 
 // App is command center
 type App struct {
+	commands   *cli.App
 	collection *TodoCollection
 }
 
-// RunCommand to running correct command
-func RunCommand(command string, args []string, wg *sync.WaitGroup) {
+// NewApp find file and returns app
+func NewApp() *App {
+	file := &File{name: ".todo", permission: 0644}
+	if err := file.FindFromCurrentDirectory(); err != nil {
+		panic(err)
+	}
+
+	return &App{
+		collection: NewTodoCollection(file),
+	}
+}
+
+// Run to running correct command
+func (a *App) Run(command string, args []string, wg *sync.WaitGroup) {
 	defer func() {
 		wg.Done()
 
@@ -36,15 +50,6 @@ func RunCommand(command string, args []string, wg *sync.WaitGroup) {
 			runtime.Goexit()
 		}
 	}()
-
-	file := &File{name: ".todo", permission: 0644}
-	if err := file.FindFromCurrentDirectory(); err != nil {
-		panic(err)
-	}
-
-	a := &App{
-		collection: NewTodoCollection(file),
-	}
 
 	command = strcase.ToCamel(command)
 
