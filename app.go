@@ -3,11 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"runtime"
 	"sync"
 
-	"github.com/iancoleman/strcase"
 	"github.com/urfave/cli/v2"
 )
 
@@ -35,13 +33,46 @@ func NewApp() *App {
 		panic(err)
 	}
 
+	commands := &cli.App{
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "lang, l",
+				Value: "english",
+				Usage: "Language for the greeting",
+			},
+			&cli.StringFlag{
+				Name:  "config, c",
+				Usage: "Load configuration from `FILE`",
+			},
+		},
+		Commands: []*cli.Command{
+			{
+				Name:    "complete",
+				Aliases: []string{"c"},
+				Usage:   "complete a task on the list",
+				Action: func(c *cli.Context) error {
+					return nil
+				},
+			},
+			{
+				Name:    "add",
+				Aliases: []string{"a"},
+				Usage:   "add a task to the list",
+				Action: func(c *cli.Context) error {
+					return nil
+				},
+			},
+		},
+	}
+
 	return &App{
 		collection: NewTodoCollection(file),
+		commands:   commands,
 	}
 }
 
 // Run to running correct command
-func (a *App) Run(command string, args []string, wg *sync.WaitGroup) {
+func (a *App) Run(args []string, wg *sync.WaitGroup) {
 	defer func() {
 		wg.Done()
 
@@ -51,15 +82,5 @@ func (a *App) Run(command string, args []string, wg *sync.WaitGroup) {
 		}
 	}()
 
-	command = strcase.ToCamel(command)
-
-	_, ok := reflect.TypeOf(a.collection).MethodByName(command)
-	if !ok {
-		a.collection.Help()
-	}
-
-	a.collection.Args = args[1:]
-
-	method := reflect.ValueOf(a.collection).MethodByName(command)
-	method.Call([]reflect.Value{})
+	a.commands.Run(args)
 }
