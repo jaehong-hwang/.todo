@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"runtime"
@@ -49,6 +50,28 @@ func NewApp() *App {
 				Usage:   "print todos to the list",
 				Action: func(c *cli.Context) error {
 					ResponseChan <- &ListResponse{todos: collection.Todos}
+					return nil
+				},
+			},
+			{
+				Name:  "init",
+				Usage: "set up todo for current directory",
+				Action: func(c *cli.Context) error {
+					if file.IsExists() {
+						return errors.New("todo collection already exists")
+					}
+
+					dir, err := os.Getwd()
+					if err != nil {
+						return err
+					}
+
+					err = file.CreateFile(dir)
+					if err != nil {
+						return err
+					}
+
+					ResponseChan <- &MessageResponse{message: "todo init complete"}
 					return nil
 				},
 			},

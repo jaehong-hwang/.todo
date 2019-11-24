@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"os"
 )
 
 // Todos is todo array
@@ -29,25 +28,6 @@ func NewTodoCollection(todoFile *File) *TodoCollection {
 		file:  todoFile,
 		Todos: todos,
 	}
-}
-
-// Init todo collection directory
-func (t *TodoCollection) Init() {
-	if t.file.IsExists() {
-		panic("todo collection already exists")
-	}
-
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	err = t.file.CreateFile(dir)
-	if err != nil {
-		panic(err)
-	}
-
-	ResponseChan <- &MessageResponse{message: "todo init complete"}
 }
 
 // Add todo item
