@@ -11,8 +11,6 @@ type Todos []Todo
 type TodoCollection struct {
 	file  *File
 	Todos Todos
-
-	Args []string
 }
 
 // NewTodoCollection returned
