@@ -31,17 +31,15 @@ func NewTodoCollection(todoFile *File) *TodoCollection {
 }
 
 // Add todo item
-func (t *TodoCollection) Add() {
-	t.Todos = append(t.Todos, Todo{
-		ID:      len(t.Todos),
-		Content: t.Args[0],
-	})
+func (t *TodoCollection) Add(todo Todo) error {
+	todo.ID = len(t.Todos)
+	t.Todos = append(t.Todos, todo)
 
 	if err := t.save(); err != nil {
-		panic(err)
+		return err
 	}
 
-	ResponseChan <- &MessageResponse{message: "add complete"}
+	return nil
 }
 
 // save todo items

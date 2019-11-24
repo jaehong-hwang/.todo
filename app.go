@@ -75,6 +75,15 @@ func NewApp() *App {
 					return nil
 				},
 			},
+			{
+				Name:    "add",
+				Aliases: []string{"a"},
+				Usage:   "add todo",
+				Action: func(c *cli.Context) error {
+					todo := Todo{Content: c.Args().Get(0)}
+					return collection.Add(todo)
+				},
+			},
 		},
 	}
 
