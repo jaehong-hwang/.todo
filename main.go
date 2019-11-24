@@ -9,5 +9,7 @@ import (
 func main() {
 	app := cli.NewApp()
 
-	app.Run(os.Args).Print()
+	if response := app.Run(os.Args); response != nil {
+		response.Print()
+	}
 }
