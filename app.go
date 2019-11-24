@@ -33,6 +33,8 @@ func NewApp() *App {
 		panic(err)
 	}
 
+	collection := NewTodoCollection(file)
+
 	commands := &cli.App{
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -47,18 +49,12 @@ func NewApp() *App {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:    "complete",
-				Aliases: []string{"c"},
-				Usage:   "complete a task on the list",
+				Name:    "list",
+				Aliases: []string{"l"},
+				Usage:   "print todos to the list",
 				Action: func(c *cli.Context) error {
-					return nil
-				},
-			},
-			{
-				Name:    "add",
-				Aliases: []string{"a"},
-				Usage:   "add a task to the list",
-				Action: func(c *cli.Context) error {
+					ResponseChan <- &ListResponse{todos: collection.Todos}
+
 					return nil
 				},
 			},
@@ -66,7 +62,7 @@ func NewApp() *App {
 	}
 
 	return &App{
-		collection: NewTodoCollection(file),
+		collection: collection,
 		commands:   commands,
 	}
 }

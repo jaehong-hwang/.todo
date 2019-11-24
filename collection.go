@@ -11,7 +11,7 @@ type Todos []Todo
 // TodoCollection is manage .todo filesystem
 type TodoCollection struct {
 	file  *File
-	todos Todos
+	Todos Todos
 
 	Args []string
 }
@@ -27,7 +27,7 @@ func NewTodoCollection(todoFile *File) *TodoCollection {
 
 	return &TodoCollection{
 		file:  todoFile,
-		todos: todos,
+		Todos: todos,
 	}
 }
 
@@ -50,26 +50,10 @@ func (t *TodoCollection) Init() {
 	ResponseChan <- &MessageResponse{message: "todo init complete"}
 }
 
-// Help command is show description for using todo app
-func (t *TodoCollection) Help() {
-	ResponseChan <- &MessageResponse{message: `usage: todo [--version] <command> [<args>]
-
-Todo app helper.
-You can run the following commands.
-
-todo init		initial todo collection
-todo add ${message}	adding todo`}
-}
-
-// List of todo items
-func (t *TodoCollection) List() {
-	ResponseChan <- &ListResponse{todos: t.todos}
-}
-
 // Add todo item
 func (t *TodoCollection) Add() {
-	t.todos = append(t.todos, Todo{
-		ID:      len(t.todos),
+	t.Todos = append(t.Todos, Todo{
+		ID:      len(t.Todos),
 		Content: t.Args[0],
 	})
 
@@ -82,7 +66,7 @@ func (t *TodoCollection) Add() {
 
 // save todo items
 func (t *TodoCollection) save() error {
-	b, err := json.Marshal(t.todos)
+	b, err := json.Marshal(t.Todos)
 	if err != nil {
 		return err
 	}
