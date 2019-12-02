@@ -1,32 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"os"
+
+	"github.com/jaehong-hwang/todo/cli"
 )
 
 func main() {
-	if len(os.Args) <= 1 {
-		os.Args = append(os.Args, "help")
-	}
+	app := cli.NewApp()
 
-	// get command
-	command := os.Args[1]
-
-	// run command
-	app, err := NewApp()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	res, err := app.Run(command, os.Args[1:])
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	if res != "" {
-		fmt.Println(res)
+	if response := app.Run(os.Args); response != nil {
+		response.Print()
 	}
 }
