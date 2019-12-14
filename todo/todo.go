@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	statusWaiting = 0
-	statusWorking = 1
-	statusEnd     = 2
+	StatusWaiting = 0
+	StatusWorking = 1
+	StatusDone    = 2
 )
 
 // Todo unit struct

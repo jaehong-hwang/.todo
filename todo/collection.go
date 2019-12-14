@@ -32,7 +32,7 @@ func NewTodoCollection(todoFile *file.File) *Collection {
 func (t *Collection) NewTodo() Todo {
 	todo := Todo{
 		ID:     len(t.Todos),
-		Status: statusWaiting,
+		Status: StatusWaiting,
 	}
 
 	return todo

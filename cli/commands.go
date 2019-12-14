@@ -3,8 +3,10 @@ package cli
 import (
 	"errors"
 	"os"
+	"strconv"
 
 	"github.com/jaehong-hwang/todo/response"
+	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/urfave/cli/v2"
 )
 
@@ -30,6 +32,12 @@ func (a *App) GetCommands() TodoCommands {
 			Aliases: []string{"a"},
 			Usage:   "add todo",
 			Action:  a.add,
+		},
+		{
+			Name:    "state",
+			Aliases: []string{"s"},
+			Usage:   "update state",
+			Action:  a.updateState,
 		},
 	}
 }
@@ -65,8 +73,37 @@ func (a *App) add(c *cli.Context) error {
 
 	todo := a.collection.NewTodo()
 	todo.Content = c.Args().Get(0)
+	todo.Status = t.StatusWaiting
 
 	a.collection.Add(todo)
+
+	content, err := a.collection.GetTodosByJSONString()
+	if err != nil {
+		return err
+	}
+
+	a.file.FillContent(content)
+
+	return nil
+}
+
+func (a *App) updateState(c *cli.Context) error {
+	id, err := strconv.Atoi(c.Args().Get(1))
+	if err != nil {
+		return err
+	}
+
+	todo := &a.collection.Todos[id]
+
+	status := c.Args().Get(0)
+	switch status {
+	case "wait":
+		todo.Status = t.StatusWaiting
+	case "work":
+		todo.Status = t.StatusWorking
+	case "done":
+		todo.Status = t.StatusDone
+	}
 
 	content, err := a.collection.GetTodosByJSONString()
 	if err != nil {
