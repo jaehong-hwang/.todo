@@ -5,15 +5,15 @@ import (
 )
 
 const (
-	StatusWaiting = 0
-	StatusWorking = 1
-	StatusDone    = 2
+	StatusWaiting = "waiting"
+	StatusWorking = "working"
+	StatusDone    = "done"
 )
 
 // Todo unit struct
 type Todo struct {
 	ID      int       `json:"id"`
-	Status  int8      `json:"status"`
+	Status  string    `json:"status"`
 	Author  string    `json:"author"`
 	Content string    `json:"content"`
 	Start   time.Time `json:"start"`
