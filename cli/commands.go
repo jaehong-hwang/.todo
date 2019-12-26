@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
 	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/urfave/cli/v2"
@@ -102,7 +103,7 @@ func (a *App) init(c *cli.Context) error {
 		return err
 	}
 
-	err = a.file.CreateFile(dir)
+	err = file.CreateTodoFile(dir)
 	if err != nil {
 		return err
 	}

@@ -19,13 +19,13 @@ type App struct {
 func NewApp() *App {
 	app := App{}
 
-	app.file = &file.File{Name: ".todo", Permission: 0644}
-	if err := app.file.FindFromCurrentDirectory(); err != nil {
+	file, err := file.FindTodoFile()
+	if err != nil {
 		panic(err)
 	}
 
+	app.file = file
 	app.collection = todo.NewTodoCollection(app.file)
-
 	app.cliApp = &cli.App{
 		Name:      "todo",
 		Copyright: "(c) 2019 JaeHong Hwang",
