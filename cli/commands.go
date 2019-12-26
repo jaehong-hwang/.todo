@@ -49,6 +49,18 @@ func (a *App) GetCommands() TodoCommands {
 			},
 		},
 		{
+			Name:  "wait",
+			Usage: "todo set waiting state",
+			Action: func(c *cli.Context) error {
+				id, err := strconv.Atoi(c.Args().First())
+				if err != nil {
+					return err
+				}
+
+				return a.updateState(id, "wait")
+			},
+		},
+		{
 			Name:  "work",
 			Usage: "todo set working state",
 			Action: func(c *cli.Context) error {
@@ -58,6 +70,18 @@ func (a *App) GetCommands() TodoCommands {
 				}
 
 				return a.updateState(id, "work")
+			},
+		},
+		{
+			Name:  "done",
+			Usage: "todo set done state",
+			Action: func(c *cli.Context) error {
+				id, err := strconv.Atoi(c.Args().First())
+				if err != nil {
+					return err
+				}
+
+				return a.updateState(id, "done")
 			},
 		},
 	}
