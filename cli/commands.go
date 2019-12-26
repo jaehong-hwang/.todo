@@ -103,6 +103,8 @@ func (a *App) updateState(c *cli.Context) error {
 		todo.Status = t.StatusWorking
 	case "done":
 		todo.Status = t.StatusDone
+	default:
+		return errors.New(status + " is unexpected state. todo have 3 state ex. wait, work, done")
 	}
 
 	content, err := a.collection.GetTodosByJSONString()
