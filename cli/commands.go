@@ -37,7 +37,28 @@ func (a *App) GetCommands() TodoCommands {
 			Name:    "state",
 			Aliases: []string{"s"},
 			Usage:   "update state",
-			Action:  a.updateState,
+			Action: func(c *cli.Context) error {
+				id, err := strconv.Atoi(c.Args().Get(1))
+				if err != nil {
+					return err
+				}
+
+				status := c.Args().Get(0)
+
+				return a.updateState(id, status)
+			},
+		},
+		{
+			Name:  "work",
+			Usage: "todo set working state",
+			Action: func(c *cli.Context) error {
+				id, err := strconv.Atoi(c.Args().First())
+				if err != nil {
+					return err
+				}
+
+				return a.updateState(id, "work")
+			},
 		},
 	}
 }
@@ -87,15 +108,9 @@ func (a *App) add(c *cli.Context) error {
 	return nil
 }
 
-func (a *App) updateState(c *cli.Context) error {
-	id, err := strconv.Atoi(c.Args().Get(1))
-	if err != nil {
-		return err
-	}
-
+func (a *App) updateState(id int, status string) error {
 	todo := &a.collection.Todos[id]
 
-	status := c.Args().Get(0)
 	switch status {
 	case "wait":
 		todo.Status = t.StatusWaiting
