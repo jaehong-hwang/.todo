@@ -30,8 +30,7 @@ func FindFromDirectory(name string, dir string) (*File, error) {
 	for {
 		path := dir + "/" + name
 		if exist, _ := IsExist(path); exist {
-			file := &File{Name: name}
-			file.SetPath(path)
+			file := &File{Name: name, path: path}
 
 			return file, nil
 		}

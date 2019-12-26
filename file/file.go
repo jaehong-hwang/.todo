@@ -36,13 +36,3 @@ func (f *File) FillContent(content string) error {
 
 	return ioutil.WriteFile(f.path, []byte(content), f.Permission)
 }
-
-// SetPath from path
-func (f *File) SetPath(path string) error {
-	if _, err := IsExist(path); err != nil {
-		return err
-	}
-
-	f.path = path
-	return nil
-}
