@@ -33,7 +33,13 @@ func newApp() *cli.App {
 		UsageText: `Todo app helper, You can run the following commands.`,
 		Version:   "0.0.1",
 		Commands: []*cli.Command{
+			initCommand,
 			listCommand,
+			addCommand,
+			stateCommand,
+			waitCommand,
+			workCommand,
+			doneCommand,
 		},
 	}
 
