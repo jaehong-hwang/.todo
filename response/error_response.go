@@ -1,7 +1,8 @@
 package response
 
 import (
-	"log"
+	"fmt"
+	"os"
 )
 
 // ErrorResponse struct
@@ -11,5 +12,6 @@ type ErrorResponse struct {
 
 // Print error with ERROR tag
 func (r *ErrorResponse) Print() {
-	log.Fatalf("[ERROR] %s", r.Err)
+	fmt.Fprintln(os.Stderr, r.Err)
+	os.Exit(1)
 }

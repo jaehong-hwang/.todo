@@ -14,29 +14,27 @@ const (
 )
 
 // FindTodoFile from current directory
-func FindTodoFile() (*File, error) {
-	file, err := FindFromCurrentDirectory(todoFileName)
-	if err != nil {
-		return nil, err
+func FindTodoFile() *File {
+	file := FindFromCurrentDirectory(todoFileName)
+	if file != nil {
+		file.Permission = todoFilePermission
 	}
 
-	file.Permission = todoFilePermission
-
-	return file, nil
+	return file
 }
 
 // FindFromDirectory by filename
-func FindFromDirectory(name string, dir string) (*File, error) {
+func FindFromDirectory(name string, dir string) *File {
 	for {
 		path := dir + "/" + name
 		if exist, _ := IsExist(path); exist {
 			file := &File{Name: name, path: path}
 
-			return file, nil
+			return file
 		}
 
 		if dir == "/" {
-			return nil, nil
+			return nil
 		}
 
 		dir = filepath.Dir(dir)
@@ -44,10 +42,10 @@ func FindFromDirectory(name string, dir string) (*File, error) {
 }
 
 // FindFromCurrentDirectory by filename
-func FindFromCurrentDirectory(name string) (*File, error) {
+func FindFromCurrentDirectory(name string) *File {
 	dir, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		panic("Failed to get current path, please check permissions")
 	}
 
 	return FindFromDirectory(name, dir)

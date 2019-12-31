@@ -14,15 +14,21 @@ import (
 // TodoCommands are collection commands
 type TodoCommands []*cli.Command
 
+var (
+	listCommand = &cli.Command{
+		Name:    "list",
+		Aliases: []string{"l"},
+		Usage:   "Print todos to the list",
+		Action: func(c *cli.Context) error {
+			appResponse = &response.ListResponse{Todos: collection.Todos}
+			return nil
+		},
+	}
+)
+
 // GetCommands are making todo collection
 func (a *App) GetCommands() TodoCommands {
 	return []*cli.Command{
-		{
-			Name:    "list",
-			Aliases: []string{"l"},
-			Usage:   "print todos to the list",
-			Action:  a.list,
-		},
 		{
 			Name:   "init",
 			Usage:  "set up todo for current directory",
@@ -86,11 +92,6 @@ func (a *App) GetCommands() TodoCommands {
 			},
 		},
 	}
-}
-
-func (a *App) list(c *cli.Context) error {
-	a.response = &response.ListResponse{Todos: a.collection.Todos}
-	return nil
 }
 
 func (a *App) init(c *cli.Context) error {
