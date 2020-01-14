@@ -13,14 +13,15 @@ type File struct {
 	path       string
 }
 
-// IsExists todo file in current directory
-func (f *File) IsExists() bool {
-	return f.path != "" && f.path != "/"
+// IsExist todo file in current directory
+func (f *File) IsExist() bool {
+	isExistsFlag, _ := IsExist(f.path)
+	return isExistsFlag
 }
 
 // GetContent from todo file
 func (f *File) GetContent() (string, error) {
-	if f.IsExists() == false {
+	if f.IsExist() == false {
 		return "", errors.New(f.Name + " file not found")
 	}
 
@@ -30,7 +31,7 @@ func (f *File) GetContent() (string, error) {
 
 // FillContent to todo file
 func (f *File) FillContent(content string) error {
-	if f.IsExists() == false {
+	if f.IsExist() == false {
 		return errors.New(f.Name + " file not found")
 	}
 
