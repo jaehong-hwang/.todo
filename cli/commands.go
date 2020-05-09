@@ -56,6 +56,10 @@ var (
 				return errors.New("todo_doesnt_exists")
 			}
 
+			if c.NArg() == 0 {
+				return errors.New("message_required")
+			}
+
 			todo := collection.NewTodo()
 			todo.Content = c.Args().Get(0)
 			todo.Status = t.StatusWaiting
