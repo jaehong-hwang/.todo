@@ -16,11 +16,13 @@ type Collection struct {
 
 // NewTodoCollection returned
 func NewTodoCollection(todoFile *file.File) *Collection {
-	input, err := todoFile.GetContent()
 	todos := Todos{}
 
-	if err == nil {
-		json.Unmarshal([]byte(input), &todos)
+	if todoFile != nil {
+		input, err := todoFile.GetContent()
+		if err == nil {
+			json.Unmarshal([]byte(input), &todos)
+		}
 	}
 
 	return &Collection{
@@ -31,7 +33,8 @@ func NewTodoCollection(todoFile *file.File) *Collection {
 // NewTodo from todo list
 func (t *Collection) NewTodo() Todo {
 	todo := Todo{
-		ID: len(t.Todos),
+		ID:     len(t.Todos),
+		Status: StatusWaiting,
 	}
 
 	return todo

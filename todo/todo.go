@@ -4,6 +4,12 @@ import (
 	"time"
 )
 
+const (
+	StatusWaiting = "waiting"
+	StatusWorking = "working"
+	StatusDone    = "done"
+)
+
 // Todo unit struct
 type Todo struct {
 	ID      int       `json:"id"`
