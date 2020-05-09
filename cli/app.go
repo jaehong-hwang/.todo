@@ -38,6 +38,7 @@ func newApp() *cli.App {
 			initCommand,
 			listCommand,
 			addCommand,
+			updateCommand,
 			stateCommand,
 			waitCommand,
 			workCommand,
