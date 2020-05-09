@@ -9,4 +9,9 @@ var (
 	Usage: "Select todo by ID",
 	Required: true,
   }
+
+  withDoneFlag = &cli.BoolFlag{
+	Name:  "with-done",
+	Usage: "Do you want already completed task?",
+  }
 )
