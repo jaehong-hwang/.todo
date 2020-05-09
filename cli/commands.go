@@ -56,11 +56,42 @@ var (
 				return errors.New("todo_doesnt_exists")
 			}
 
+			if c.NArg() == 0 {
+				return errors.New("message_required")
+			}
+
 			todo := collection.NewTodo()
 			todo.Content = c.Args().Get(0)
 			todo.Status = t.StatusWaiting
 
 			collection.Add(todo)
+
+			content, err := collection.GetTodosByJSONString()
+			if err != nil {
+				return err
+			}
+
+			return todoFile.FillContent(content)
+		},
+	}
+
+	updateCommand = &cli.Command{
+		Name:    "update",
+		Flags: []cli.Flag{ idFlag },
+		Aliases: []string{"u"},
+		Usage:   "update todo message",
+		Action: func(c *cli.Context) error {
+			if todoFile == nil {
+				return errors.New("todo_doesnt_exists")
+			}
+
+			if c.NArg() == 0 {
+				return errors.New("message_required")
+			}
+
+			id := c.Int("id")
+			todo := &collection.Todos[id]
+			todo.Content = c.Args().Get(0)
 
 			content, err := collection.GetTodosByJSONString()
 			if err != nil {
