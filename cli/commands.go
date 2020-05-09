@@ -39,10 +39,23 @@ var (
 
 	listCommand = &cli.Command{
 		Name:    "list",
+		Flags: []cli.Flag{ withDoneFlag, statusFlag },
 		Aliases: []string{"l"},
 		Usage:   "Print todos to the list",
 		Action: func(c *cli.Context) error {
-			appResponse = &response.ListResponse{Todos: collection.Todos}
+			var todos t.Todos
+
+			status := c.String("status")
+			
+			if c.Bool("with-done") {
+				todos = collection.Todos
+			} else if status != "" {
+				todos = collection.GetTodosByStatus([]string{ status })
+			} else {
+				todos = collection.GetTodosByStatus([]string{ t.StatusWaiting, t.StatusWorking })
+			}
+
+			appResponse = &response.ListResponse{Todos: todos}
 			return nil
 		},
 	}

@@ -54,3 +54,17 @@ func (t *Collection) GetTodosByJSONString() (string, error) {
 
 	return string(b), nil
 }
+
+// GetTodosByStatus
+func (t *Collection) GetTodosByStatus(status []string) Todos {
+	todos := Todos{}
+	for _, todo := range t.Todos {
+		for _, s := range status {
+			if s == todo.Status {
+				todos = append(todos, todo)
+				break
+			}
+		}
+	}
+	return todos
+}
