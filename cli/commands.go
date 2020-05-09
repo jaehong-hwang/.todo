@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"errors"
 	"os"
 
 	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
+	"github.com/jaehong-hwang/todo/errors"
 	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/urfave/cli/v2"
 )
@@ -19,7 +19,7 @@ var (
 		Usage: "set up todo for current directory",
 		Action: func(c *cli.Context) error {
 			if todoFile != nil {
-				return errors.New("todo collection already exists")
+				return errors.New("todo_already_exists")
 			}
 
 			dir, err := os.Getwd()
@@ -53,7 +53,7 @@ var (
 		Usage:   "add todo",
 		Action: func(c *cli.Context) error {
 			if todoFile == nil {
-				return errors.New("todo dosen't exists, you should run todo init")
+				return errors.New("todo_doesnt_exists")
 			}
 
 			todo := collection.NewTodo()

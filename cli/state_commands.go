@@ -1,10 +1,10 @@
 package cli
 
 import (
-	"errors"
 	"strconv"
 
 	t "github.com/jaehong-hwang/todo/todo"
+	"github.com/jaehong-hwang/todo/errors"
 	"github.com/urfave/cli/v2"
 )
 
@@ -66,7 +66,7 @@ func updateState(id int, status string) error {
 	case "done":
 		todo.Status = t.StatusDone
 	default:
-		return errors.New(status + " is unexpected state. todo have 3 state ex. wait, work, done")
+		return errors.New("unexpected_state")
 	}
 
 	content, err := collection.GetTodosByJSONString()
