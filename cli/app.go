@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"sort"
+
 	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
 	"github.com/jaehong-hwang/todo/todo"
@@ -42,6 +44,9 @@ func newApp() *cli.App {
 			doneCommand,
 		},
 	}
+
+	sort.Sort(cli.FlagsByName(cliApp.Flags))
+	sort.Sort(cli.CommandsByName(cliApp.Commands))
 
 	return cliApp
 }
