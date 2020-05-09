@@ -12,13 +12,10 @@ var (
 	stateCommand = &cli.Command{
 		Name:    "state",
 		Aliases: []string{"s"},
+		Flags: []cli.Flag{ idFlag },
 		Usage:   "update state",
 		Action: func(c *cli.Context) error {
-			id, err := strconv.Atoi(c.Args().Get(1))
-			if err != nil {
-				return err
-			}
-
+			id := c.Int("id")
 			status := c.Args().Get(0)
 
 			return updateState(id, status)
