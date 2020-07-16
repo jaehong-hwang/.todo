@@ -2,12 +2,16 @@ package file
 
 import (
 	"os"
+    "os/user"
 	"path/filepath"
 )
 
 const (
 	// TodoFileName is name of todo collection file
 	todoFileName string = ".todo"
+
+	// TodoFileName is name of todo collection file
+	todoSystemFileName string = ".todo.system"
 
 	// TodoFilePermission set read permission
 	todoFilePermission os.FileMode = 0644
@@ -16,6 +20,21 @@ const (
 // FindTodoFile from current directory
 func FindTodoFile() *File {
 	file := FindFromCurrentDirectory(todoFileName)
+	if file != nil {
+		file.Permission = todoFilePermission
+	}
+
+	return file
+}
+
+// FindTodoSystemFile from home directory
+func FindTodoSystemFile() *File {
+    usr, err := user.Current()
+    if err != nil {
+        panic("Failed to get current user")
+	}
+
+	file := FindFromDirectory(todoSystemFileName, usr.HomeDir)
 	if file != nil {
 		file.Permission = todoFilePermission
 	}

@@ -18,6 +18,7 @@ type App struct {
 var (
 	app        = newApp()
 	todoFile   = file.FindTodoFile()
+	todoSystemFile = file.FindTodoSystemFile()
 	collection = todo.NewTodoCollection(todoFile)
 )
 
