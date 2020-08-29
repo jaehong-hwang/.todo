@@ -2,7 +2,7 @@ package file
 
 import (
 	"os"
-    "os/user"
+	"os/user"
 	"path/filepath"
 )
 
@@ -29,9 +29,9 @@ func FindTodoFile() *File {
 
 // FindTodoSystemFile from home directory
 func FindTodoSystemFile() *File {
-    usr, err := user.Current()
-    if err != nil {
-        panic("Failed to get current user")
+	usr, err := user.Current()
+	if err != nil {
+		panic("Failed to get current user")
 	}
 
 	file := FindFromDirectory(todoSystemFileName, usr.HomeDir)
