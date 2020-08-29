@@ -3,9 +3,8 @@ package cli
 import (
 	"os"
 
-	"github.com/jaehong-hwang/todo/file"
-	"github.com/jaehong-hwang/todo/response"
 	"github.com/jaehong-hwang/todo/errors"
+	"github.com/jaehong-hwang/todo/response"
 	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/urfave/cli/v2"
 )
@@ -18,7 +17,7 @@ var (
 		Name:  "init",
 		Usage: "set up todo for current directory",
 		Action: func(c *cli.Context) error {
-			if todoFile != nil {
+			if todoFile.IsExist() {
 				return errors.New("todo_already_exists")
 			}
 
@@ -27,10 +26,12 @@ var (
 				return err
 			}
 
-			err = file.CreateTodoFile(dir)
+			err = todoFile.CreateIfNotExist()
 			if err != nil {
 				return err
 			}
+
+			system.AddDirectory(dir)
 
 			appResponse = &response.MessageResponse{Message: "todo init complete"}
 			return nil
