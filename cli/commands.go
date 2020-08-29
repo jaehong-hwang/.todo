@@ -3,9 +3,8 @@ package cli
 import (
 	"os"
 
-	"github.com/jaehong-hwang/todo/file"
-	"github.com/jaehong-hwang/todo/response"
 	"github.com/jaehong-hwang/todo/errors"
+	"github.com/jaehong-hwang/todo/response"
 	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/urfave/cli/v2"
 )
@@ -18,7 +17,7 @@ var (
 		Name:  "init",
 		Usage: "set up todo for current directory",
 		Action: func(c *cli.Context) error {
-			if todoFile != nil {
+			if todoFile.IsExist() {
 				return errors.New("todo_already_exists")
 			}
 
@@ -27,10 +26,12 @@ var (
 				return err
 			}
 
-			err = file.CreateTodoFile(dir)
+			err = todoFile.CreateIfNotExist()
 			if err != nil {
 				return err
 			}
+
+			system.AddDirectory(dir)
 
 			appResponse = &response.MessageResponse{Message: "todo init complete"}
 			return nil
@@ -39,20 +40,20 @@ var (
 
 	listCommand = &cli.Command{
 		Name:    "list",
-		Flags: []cli.Flag{ withDoneFlag, statusFlag },
+		Flags:   []cli.Flag{withDoneFlag, statusFlag},
 		Aliases: []string{"l"},
 		Usage:   "Print todos to the list",
 		Action: func(c *cli.Context) error {
 			var todos t.Todos
 
 			status := c.String("status")
-			
+
 			if c.Bool("with-done") {
 				todos = collection.Todos
 			} else if status != "" {
-				todos = collection.GetTodosByStatus([]string{ status })
+				todos = collection.GetTodosByStatus([]string{status})
 			} else {
-				todos = collection.GetTodosByStatus([]string{ t.StatusWaiting, t.StatusWorking })
+				todos = collection.GetTodosByStatus([]string{t.StatusWaiting, t.StatusWorking})
 			}
 
 			appResponse = &response.ListResponse{Todos: todos}
@@ -90,7 +91,7 @@ var (
 
 	updateCommand = &cli.Command{
 		Name:    "update",
-		Flags: []cli.Flag{ idFlag },
+		Flags:   []cli.Flag{idFlag},
 		Aliases: []string{"u"},
 		Usage:   "update todo message",
 		Action: func(c *cli.Context) error {

@@ -16,9 +16,11 @@ type App struct {
 }
 
 var (
-	app        = newApp()
-	todoFile   = file.FindTodoFile()
-	collection = todo.NewTodoCollection(todoFile)
+	app            = newApp()
+	todoFile       = file.FindTodoFile()
+	todoSystemFile = file.FindTodoSystemFile()
+	collection     = todo.NewTodoCollection(todoFile)
+	system         = todo.NewSystem(todoSystemFile)
 )
 
 var appResponse response.Response
