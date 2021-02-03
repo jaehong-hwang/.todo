@@ -6,10 +6,11 @@ import (
 	"github.com/jaehong-hwang/todo/file"
 )
 
+type Directories []string
 type System struct {
 	file        *file.File
-	Directories []string `json:"directories"`
-	Author      Author   `json:"author"`
+	Directories Directories `json:"directories"`
+	Author      Author      `json:"author"`
 }
 
 type Author struct {

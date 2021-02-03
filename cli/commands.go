@@ -61,6 +61,16 @@ var (
 		},
 	}
 
+	directoriesCommand = &cli.Command{
+		Name:    "directories",
+		Aliases: []string{"d"},
+		Usage:   "Print directories of todo collection",
+		Action: func(c *cli.Context) error {
+			appResponse = &response.DirectoryResponse{Directories: system.Directories}
+			return nil
+		},
+	}
+
 	listCommand = &cli.Command{
 		Name:    "list",
 		Flags:   []cli.Flag{withDoneFlag, statusFlag},
