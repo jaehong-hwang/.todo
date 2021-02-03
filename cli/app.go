@@ -37,6 +37,7 @@ func newApp() *cli.App {
 		Commands: []*cli.Command{
 			initCommand,
 			configCommand,
+			directoriesCommand,
 			listCommand,
 			addCommand,
 			updateCommand,
