@@ -36,10 +36,10 @@ func NewSystem(systemFile *file.File) *System {
 
 func (s *System) AddDirectory(directory string) error {
 	s.Directories = append(s.Directories, directory)
-	return s.save()
+	return s.Save()
 }
 
-func (s *System) save() error {
+func (s *System) Save() error {
 	jsonData, err := json.Marshal(s)
 	if err != nil {
 		return err

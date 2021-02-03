@@ -36,6 +36,7 @@ func newApp() *cli.App {
 		Version:   "0.0.1",
 		Commands: []*cli.Command{
 			initCommand,
+			configCommand,
 			listCommand,
 			addCommand,
 			updateCommand,
