@@ -41,9 +41,22 @@ var (
 
 	configCommand = &cli.Command{
 		Name:    "config",
+		Flags:   []cli.Flag{setAuthorName, setAuthorEmail},
 		Aliases: []string{"c"},
 		Usage:   "Set config global todo",
 		Action: func(c *cli.Context) error {
+			authorName := c.String("set-author-name")
+			if authorName != "" {
+				system.Author.Name = authorName
+			}
+
+			authorEmail := c.String("set-author-email")
+			if authorEmail != "" {
+				system.Author.Email = authorEmail
+			}
+
+			system.Save()
+
 			return nil
 		},
 	}
