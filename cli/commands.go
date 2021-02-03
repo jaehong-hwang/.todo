@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/jaehong-hwang/todo/errors"
@@ -34,6 +35,15 @@ var (
 			system.AddDirectory(dir)
 
 			appResponse = &response.MessageResponse{Message: "todo init complete"}
+			return nil
+		},
+	}
+
+	configCommand = &cli.Command{
+		Name:    "config",
+		Aliases: []string{"c"},
+		Usage:   "Set config global todo",
+		Action: func(c *cli.Context) error {
 			return nil
 		},
 	}
@@ -74,9 +84,15 @@ var (
 				return errors.New("message_required")
 			}
 
+			if system.Author.Name == "" || system.Author.Email == "" {
+				fmt.Println("[Warning] You should set up author setting, `todo config`")
+			}
+
 			todo := collection.NewTodo()
 			todo.Content = c.Args().Get(0)
 			todo.Status = t.StatusWaiting
+			todo.Author = system.Author.Name
+			todo.AuthorEmail = system.Author.Email
 
 			collection.Add(todo)
 
