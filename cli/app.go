@@ -45,6 +45,7 @@ func newApp() *cli.App {
 			waitCommand,
 			workCommand,
 			doneCommand,
+			removeCommand,
 		},
 	}
 

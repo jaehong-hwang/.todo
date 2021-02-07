@@ -45,6 +45,12 @@ func (t *Collection) Add(todo Todo) {
 	t.Todos = append(t.Todos, todo)
 }
 
+// Remove todo item by id
+func (t *Collection) Remove(id int) {
+	t.Todos[id] = t.Todos[len(t.Todos)-1]
+	t.Todos = t.Todos[:len(t.Todos)-1]
+}
+
 // GetTodosByJSONString from current collection
 func (t *Collection) GetTodosByJSONString() (string, error) {
 	b, err := json.Marshal(t.Todos)

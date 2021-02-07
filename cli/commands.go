@@ -154,4 +154,34 @@ var (
 			return todoFile.FillContent(content)
 		},
 	}
+
+	removeCommand = &cli.Command{
+		Name:    "remove",
+		Flags:   []cli.Flag{idFlag},
+		Aliases: []string{"rm"},
+		Usage:   "remove todo message",
+		Action: func(c *cli.Context) error {
+			if todoFile == nil {
+				return errors.New("todo_doesnt_exists")
+			}
+
+			id := c.Int("id")
+			todo := collection.Todos[id]
+			yn := "y"
+			fmt.Print("Do you want remove this todo?\n Content: ", todo.Content, " (y, n): ")
+			fmt.Scanln(&yn)
+			if yn != "y" && yn != "Y" {
+				return nil
+			}
+
+			collection.Remove(id)
+
+			content, err := collection.GetTodosByJSONString()
+			if err != nil {
+				return err
+			}
+
+			return todoFile.FillContent(content)
+		},
+	}
 )
