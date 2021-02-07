@@ -168,7 +168,7 @@ var (
 			id := c.Int("id")
 			todo := collection.Todos[id]
 			yn := "y"
-			fmt.Print("Do you want remove this todo?\n Content: ", todo.Content, " (y, n): ")
+			fmt.Print("Do you want remove this todo?\nContent: ", todo.Content, " (y, n): ")
 			fmt.Scanln(&yn)
 			if yn != "y" && yn != "Y" {
 				return nil
@@ -182,6 +182,25 @@ var (
 			}
 
 			return todoFile.FillContent(content)
+		},
+	}
+
+	removeCollectionCommand = &cli.Command{
+		Name:  "remove-collection",
+		Usage: "remove current todo collection",
+		Action: func(c *cli.Context) error {
+			if todoFile == nil {
+				return errors.New("todo_doesnt_exists")
+			}
+
+			yn := "y"
+			fmt.Print("Do you want remove current todo collection? (y, n): ")
+			fmt.Scanln(&yn)
+			if yn != "y" && yn != "Y" {
+				return nil
+			}
+
+			return todoFile.Remove()
 		},
 	}
 )
