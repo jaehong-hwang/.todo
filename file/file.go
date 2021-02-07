@@ -47,3 +47,8 @@ func (f *File) FillContent(content string) error {
 
 	return ioutil.WriteFile(f.path, []byte(content), f.Permission)
 }
+
+// Remove current file
+func (f *File) Remove() error {
+	return os.Remove(f.path)
+}

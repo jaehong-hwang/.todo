@@ -46,6 +46,7 @@ func newApp() *cli.App {
 			workCommand,
 			doneCommand,
 			removeCommand,
+			removeCollectionCommand,
 		},
 	}
 
