@@ -82,23 +82,32 @@ var (
 
 	listCommand = &cli.Command{
 		Name:    "list",
-		Flags:   []cli.Flag{withDoneFlag, statusFlag},
+		Flags:   []cli.Flag{withDoneFlag, statusFlag, getJsonFlag},
 		Aliases: []string{"l"},
 		Usage:   "Print todos to the list",
 		Action: func(c *cli.Context) error {
-			var todos t.Todos
+			var col t.Collection
 
 			status := c.String("status")
 
 			if c.Bool("with-done") {
-				todos = collection.Todos
+				col = *collection
 			} else if status != "" {
-				todos = collection.GetTodosByStatus([]string{status})
+				col = collection.SearchByStatus([]string{status})
 			} else {
-				todos = collection.GetTodosByStatus([]string{t.StatusWaiting, t.StatusWorking})
+				col = collection.SearchByStatus([]string{t.StatusWaiting, t.StatusWorking})
 			}
 
-			appResponse = &response.ListResponse{Todos: todos}
+			if c.Bool("get-json") {
+				json, err := col.GetTodosJSONString()
+				if err == nil {
+					appResponse = &response.MessageResponse{Message: json}
+				} else {
+					appResponse = &response.ErrorResponse{Err: err}
+				}
+			} else {
+				appResponse = &response.ListResponse{Todos: col.Todos}
+			}
 			return nil
 		},
 	}
@@ -130,7 +139,7 @@ var (
 
 			collection.Add(todo)
 
-			content, err := collection.GetTodosByJSONString()
+			content, err := collection.GetTodosJSONString()
 			if err != nil {
 				return err
 			}
@@ -157,7 +166,7 @@ var (
 			todo := &collection.Todos[id]
 			todo.Content = c.Args().Get(0)
 
-			content, err := collection.GetTodosByJSONString()
+			content, err := collection.GetTodosJSONString()
 			if err != nil {
 				return err
 			}
@@ -187,7 +196,7 @@ var (
 
 			collection.Remove(id)
 
-			content, err := collection.GetTodosByJSONString()
+			content, err := collection.GetTodosJSONString()
 			if err != nil {
 				return err
 			}
