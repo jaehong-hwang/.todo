@@ -30,4 +30,9 @@ var (
 		Name:  "set-author-email",
 		Usage: "literally set global author email",
 	}
+
+	getJsonFlag = &cli.BoolFlag{
+		Name:  "get-json",
+		Usage: "return in Json format",
+	}
 )

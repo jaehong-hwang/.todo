@@ -51,18 +51,8 @@ func (t *Collection) Remove(id int) {
 	t.Todos = t.Todos[:len(t.Todos)-1]
 }
 
-// GetTodosByJSONString from current collection
-func (t *Collection) GetTodosByJSONString() (string, error) {
-	b, err := json.Marshal(t.Todos)
-	if err != nil {
-		return "", err
-	}
-
-	return string(b), nil
-}
-
-// GetTodosByStatus
-func (t *Collection) GetTodosByStatus(status []string) Todos {
+// SearchByStatus from current collection
+func (t *Collection) SearchByStatus(status []string) Collection {
 	todos := Todos{}
 	for _, todo := range t.Todos {
 		for _, s := range status {
@@ -72,5 +62,15 @@ func (t *Collection) GetTodosByStatus(status []string) Todos {
 			}
 		}
 	}
-	return todos
+	return Collection{Todos: todos}
+}
+
+// GetTodosJSONString from current collection
+func (t *Collection) GetTodosJSONString() (string, error) {
+	b, err := json.Marshal(t.Todos)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
 }

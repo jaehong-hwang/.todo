@@ -3,8 +3,8 @@ package cli
 import (
 	"strconv"
 
-	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/jaehong-hwang/todo/errors"
+	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/urfave/cli/v2"
 )
 
@@ -12,7 +12,7 @@ var (
 	stateCommand = &cli.Command{
 		Name:    "state",
 		Aliases: []string{"s"},
-		Flags: []cli.Flag{ idFlag },
+		Flags:   []cli.Flag{idFlag},
 		Usage:   "update state",
 		Action: func(c *cli.Context) error {
 			id := c.Int("id")
@@ -66,7 +66,7 @@ func updateState(id int, status string) error {
 		return errors.New("unexpected_state")
 	}
 
-	content, err := collection.GetTodosByJSONString()
+	content, err := collection.GetTodosJSONString()
 	if err != nil {
 		return err
 	}
