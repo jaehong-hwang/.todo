@@ -45,6 +45,10 @@ var (
 		Aliases: []string{"c"},
 		Usage:   "Set config global todo",
 		Action: func(c *cli.Context) error {
+			if c.NumFlags() == 0 {
+				cli.ShowCommandHelpAndExit(c, "config", 0)
+			}
+
 			authorName := c.String("set-author-name")
 			if authorName != "" {
 				system.Author.Name = authorName
@@ -55,8 +59,12 @@ var (
 				system.Author.Email = authorEmail
 			}
 
-			system.Save()
-
+			err := system.Save()
+			if err == nil {
+				appResponse = &response.MessageResponse{Message: "Your configuration has been saved successfully."}
+			} else {
+				appResponse = &response.ErrorResponse{Err: err}
+			}
 			return nil
 		},
 	}
