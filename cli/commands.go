@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/jaehong-hwang/todo/errors"
 	"github.com/jaehong-hwang/todo/response"
@@ -124,6 +125,8 @@ var (
 			todo.Status = t.StatusWaiting
 			todo.Author = system.Author.Name
 			todo.AuthorEmail = system.Author.Email
+			todo.Start = time.Now()
+			todo.End = time.Now()
 
 			collection.Add(todo)
 
