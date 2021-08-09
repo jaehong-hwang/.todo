@@ -98,6 +98,14 @@ var (
 				col = collection.SearchByStatus([]string{t.StatusWaiting, t.StatusWorking})
 			}
 
+			if todoFile.IsExist() == false {
+				return errors.New("todo_doesnt_exists")
+			}
+
+			if len(col.Todos) == 0 {
+				return errors.New("todo_empty")
+			}
+
 			if c.Bool("get-json") {
 				json, err := col.GetTodosJSONString()
 				if err == nil {
@@ -117,7 +125,7 @@ var (
 		Aliases: []string{"a"},
 		Usage:   "add todo",
 		Action: func(c *cli.Context) error {
-			if todoFile == nil {
+			if todoFile.IsExist() == false {
 				return errors.New("todo_doesnt_exists")
 			}
 
@@ -154,7 +162,7 @@ var (
 		Aliases: []string{"u"},
 		Usage:   "update todo message",
 		Action: func(c *cli.Context) error {
-			if todoFile == nil {
+			if todoFile.IsExist() == false {
 				return errors.New("todo_doesnt_exists")
 			}
 
@@ -181,7 +189,7 @@ var (
 		Aliases: []string{"rm"},
 		Usage:   "remove todo message",
 		Action: func(c *cli.Context) error {
-			if todoFile == nil {
+			if todoFile.IsExist() == false {
 				return errors.New("todo_doesnt_exists")
 			}
 
@@ -209,7 +217,7 @@ var (
 		Name:  "remove-collection",
 		Usage: "remove current todo collection",
 		Action: func(c *cli.Context) error {
-			if todoFile == nil {
+			if todoFile.IsExist() == false {
 				return errors.New("todo_doesnt_exists")
 			}
 
