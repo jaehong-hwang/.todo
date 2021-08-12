@@ -53,7 +53,10 @@ func getUpdatingStateAction(state string) func(*cli.Context) error {
 }
 
 func updateState(id int, status string) error {
-	todo := &collection.Todos[id]
+	todo := collection.GetTodo(id)
+	if todo == nil {
+		return errors.New("todo_id_not_found")
+	}
 
 	switch status {
 	case "wait":

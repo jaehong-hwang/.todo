@@ -33,7 +33,7 @@ func NewTodoCollection(todoFile *file.File) *Collection {
 // NewTodo from todo list
 func (t *Collection) NewTodo() Todo {
 	todo := Todo{
-		ID:     len(t.Todos),
+		ID:     t.Todos[len(t.Todos)-1].ID + 1,
 		Status: StatusWaiting,
 	}
 
@@ -46,9 +46,29 @@ func (t *Collection) Add(todo Todo) {
 }
 
 // Remove todo item by id
-func (t *Collection) Remove(id int) {
-	t.Todos[id] = t.Todos[len(t.Todos)-1]
-	t.Todos = t.Todos[:len(t.Todos)-1]
+func (t *Collection) Remove(id int) bool {
+	for i, todo := range t.Todos {
+		if todo.ID == id {
+			for j := i; j < len(t.Todos)-1; j++ {
+				t.Todos[j] = t.Todos[j+1]
+			}
+			t.Todos = t.Todos[:len(t.Todos)-1]
+			return true
+		}
+	}
+
+	return false
+}
+
+// GetTodo by id
+func (t *Collection) GetTodo(id int) *Todo {
+	for i, todo := range t.Todos {
+		if todo.ID == id {
+			return &t.Todos[i]
+		}
+	}
+
+	return nil
 }
 
 // SearchByStatus from current collection
