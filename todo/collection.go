@@ -53,9 +53,9 @@ func (t *Collection) Remove(id int) {
 
 // GetTodo by id
 func (t *Collection) GetTodo(id int) *Todo {
-	for _, todo := range t.Todos {
+	for i, todo := range t.Todos {
 		if todo.ID == id {
-			return &todo
+			return &t.Todos[i]
 		}
 	}
 

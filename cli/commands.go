@@ -171,7 +171,11 @@ var (
 			}
 
 			id := c.Int("id")
-			todo := &collection.Todos[id]
+			todo := collection.GetTodo(id)
+			if todo == nil {
+				return errors.New("todo_id_not_found")
+			}
+
 			todo.Content = c.Args().Get(0)
 
 			content, err := collection.GetTodosJSONString()
