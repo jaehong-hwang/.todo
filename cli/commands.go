@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/jaehong-hwang/todo/errors"
@@ -173,7 +174,9 @@ var (
 			id := c.Int("id")
 			todo := collection.GetTodo(id)
 			if todo == nil {
-				return errors.New("todo_id_not_found")
+				return errors.NewWithParam("todo_id_not_found", map[string]string{
+					"id": strconv.Itoa(id),
+				})
 			}
 
 			todo.Content = c.Args().Get(0)
@@ -200,7 +203,9 @@ var (
 			id := c.Int("id")
 			todo := collection.GetTodo(id)
 			if todo == nil {
-				return errors.New("todo_id_not_found")
+				return errors.NewWithParam("todo_id_not_found", map[string]string{
+					"id": strconv.Itoa(id),
+				})
 			}
 
 			yn := "y"

@@ -1,7 +1,9 @@
 package errors
 
+import "strings"
+
 type TodoError struct {
-	Code string
+	Code    string
 	Message string
 }
 
@@ -11,7 +13,18 @@ func (e *TodoError) Error() string {
 
 func New(code string) error {
 	return &TodoError{
-		Code: code,
+		Code:    code,
 		Message: errors[code],
+	}
+}
+
+func NewWithParam(code string, param map[string]string) error {
+	errorMessage := errors[code]
+	for key, val := range param {
+		errorMessage = strings.Replace(errorMessage, "${"+key+"}", val, -1)
+	}
+	return &TodoError{
+		Code:    code,
+		Message: errorMessage,
 	}
 }
