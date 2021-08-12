@@ -21,6 +21,7 @@ type Todo struct {
 	Content     string    `json:"content"`
 	Start       time.Time `json:"start"`
 	End         time.Time `json:"end"`
+	Labels      []*Label  `json:"label"`
 }
 
 func GetFields() []string {
@@ -43,4 +44,8 @@ func (t *Todo) ToStringSlice() []string {
 		t.Start.Format("2006.01.02 15:04"),
 		t.End.Format("2006.01.02 15:04"),
 	}
+}
+
+func (t *Todo) AddLabel(l *Label) {
+	t.Labels = append(t.Labels, l)
 }
