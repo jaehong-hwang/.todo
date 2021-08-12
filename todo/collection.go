@@ -46,9 +46,18 @@ func (t *Collection) Add(todo Todo) {
 }
 
 // Remove todo item by id
-func (t *Collection) Remove(id int) {
-	t.Todos[id] = t.Todos[len(t.Todos)-1]
-	t.Todos = t.Todos[:len(t.Todos)-1]
+func (t *Collection) Remove(id int) bool {
+	for i, todo := range t.Todos {
+		if todo.ID == id {
+			for j := i; j < len(t.Todos)-1; j++ {
+				t.Todos[j] = t.Todos[j+1]
+			}
+			t.Todos = t.Todos[:len(t.Todos)-1]
+			return true
+		}
+	}
+
+	return false
 }
 
 // GetTodo by id
