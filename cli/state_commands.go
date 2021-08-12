@@ -55,7 +55,9 @@ func getUpdatingStateAction(state string) func(*cli.Context) error {
 func updateState(id int, status string) error {
 	todo := collection.GetTodo(id)
 	if todo == nil {
-		return errors.New("todo_id_not_found")
+		return errors.NewWithParam("todo_id_not_found", map[string]string{
+			"id": strconv.Itoa(id),
+		})
 	}
 
 	switch status {
@@ -66,7 +68,9 @@ func updateState(id int, status string) error {
 	case "done":
 		todo.Status = t.StatusDone
 	default:
-		return errors.New("unexpected_state")
+		return errors.NewWithParam("unexpected_state", map[string]string{
+			"state": status,
+		})
 	}
 
 	content, err := collection.GetTodosJSONString()
