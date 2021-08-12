@@ -33,7 +33,7 @@ func NewTodoCollection(todoFile *file.File) *Collection {
 // NewTodo from todo list
 func (t *Collection) NewTodo() Todo {
 	todo := Todo{
-		ID:     len(t.Todos),
+		ID:     t.Todos[len(t.Todos)-1].ID + 1,
 		Status: StatusWaiting,
 	}
 
