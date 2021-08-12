@@ -51,6 +51,17 @@ func (t *Collection) Remove(id int) {
 	t.Todos = t.Todos[:len(t.Todos)-1]
 }
 
+// GetTodo by id
+func (t *Collection) GetTodo(id int) *Todo {
+	for _, todo := range t.Todos {
+		if todo.ID == id {
+			return &todo
+		}
+	}
+
+	return nil
+}
+
 // SearchByStatus from current collection
 func (t *Collection) SearchByStatus(status []string) Collection {
 	todos := Todos{}

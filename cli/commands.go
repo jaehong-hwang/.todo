@@ -194,7 +194,11 @@ var (
 			}
 
 			id := c.Int("id")
-			todo := collection.Todos[id]
+			todo := collection.GetTodo(id)
+			if todo == nil {
+				return errors.New("todo_id_not_found")
+			}
+
 			yn := "y"
 			fmt.Print("Do you want remove this todo?\nContent: ", todo.Content, " (y, n): ")
 			fmt.Scanln(&yn)
