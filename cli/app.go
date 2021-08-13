@@ -15,35 +15,51 @@ type App struct {
 	file       *file.File
 }
 
-// NewApp find file and returns app
-func NewApp() *App {
-	app := App{}
+var (
+	app            = newApp()
+	todoFile       = file.FindTodoFile()
+	todoSystemFile = file.FindTodoSystemFile()
+	collection     = todo.NewTodoCollection(todoFile)
+	system         = todo.NewSystem(todoSystemFile)
+)
 
-	app.file = &file.File{Name: ".todo", Permission: 0644}
-	if err := app.file.FindFromCurrentDirectory(); err != nil {
-		panic(err)
-	}
+var appResponse response.Response
 
-	app.collection = todo.NewTodoCollection(app.file)
-
-	app.cliApp = &cli.App{
+// newApp find file and returns app
+func newApp() *cli.App {
+	cliApp := &cli.App{
 		Name:      "todo",
 		Copyright: "(c) 2019 JaeHong Hwang",
 		HelpName:  "contrive",
 		Usage:     "",
 		UsageText: `Todo app helper, You can run the following commands.`,
 		Version:   "0.0.1",
-		Commands:  app.GetCommands(),
+		Commands: []*cli.Command{
+			initCommand,
+			configCommand,
+			directoriesCommand,
+			listCommand,
+			addCommand,
+			updateCommand,
+			addLabel,
+			removeLabel,
+			stateCommand,
+			waitCommand,
+			workCommand,
+			doneCommand,
+			removeCommand,
+			removeCollectionCommand,
+		},
 	}
 
-	return &app
+	return cliApp
 }
 
 // Run to running correct command
-func (a *App) Run(args []string) response.Response {
-	if err := a.cliApp.Run(args); err != nil {
+func Run(args []string) response.Response {
+	if err := app.Run(args); err != nil {
 		return &response.ErrorResponse{Err: err}
 	}
 
-	return a.response
+	return appResponse
 }

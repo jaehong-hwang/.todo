@@ -16,11 +16,13 @@ type Collection struct {
 
 // NewTodoCollection returned
 func NewTodoCollection(todoFile *file.File) *Collection {
-	input, err := todoFile.GetContent()
 	todos := Todos{}
 
-	if err == nil {
-		json.Unmarshal([]byte(input), &todos)
+	if todoFile != nil {
+		input, err := todoFile.GetContent()
+		if err == nil {
+			json.Unmarshal([]byte(input), &todos)
+		}
 	}
 
 	return &Collection{
@@ -31,7 +33,8 @@ func NewTodoCollection(todoFile *file.File) *Collection {
 // NewTodo from todo list
 func (t *Collection) NewTodo() Todo {
 	todo := Todo{
-		ID: len(t.Todos),
+		ID:     t.Todos[len(t.Todos)-1].ID + 1,
+		Status: StatusWaiting,
 	}
 
 	return todo
@@ -42,8 +45,48 @@ func (t *Collection) Add(todo Todo) {
 	t.Todos = append(t.Todos, todo)
 }
 
-// GetTodosByJSONString from current collection
-func (t *Collection) GetTodosByJSONString() (string, error) {
+// Remove todo item by id
+func (t *Collection) Remove(id int) bool {
+	for i, todo := range t.Todos {
+		if todo.ID == id {
+			for j := i; j < len(t.Todos)-1; j++ {
+				t.Todos[j] = t.Todos[j+1]
+			}
+			t.Todos = t.Todos[:len(t.Todos)-1]
+			return true
+		}
+	}
+
+	return false
+}
+
+// GetTodo by id
+func (t *Collection) GetTodo(id int) *Todo {
+	for i, todo := range t.Todos {
+		if todo.ID == id {
+			return &t.Todos[i]
+		}
+	}
+
+	return nil
+}
+
+// SearchByStatus from current collection
+func (t *Collection) SearchByStatus(status []string) Collection {
+	todos := Todos{}
+	for _, todo := range t.Todos {
+		for _, s := range status {
+			if s == todo.Status {
+				todos = append(todos, todo)
+				break
+			}
+		}
+	}
+	return Collection{Todos: todos}
+}
+
+// GetTodosJSONString from current collection
+func (t *Collection) GetTodosJSONString() (string, error) {
 	b, err := json.Marshal(t.Todos)
 	if err != nil {
 		return "", err

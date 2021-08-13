@@ -1,6 +1,9 @@
 package response
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 // ErrorResponse struct
 type ErrorResponse struct {
@@ -9,5 +12,6 @@ type ErrorResponse struct {
 
 // Print error with ERROR tag
 func (r *ErrorResponse) Print() {
-	fmt.Println("[ERROR]", r.Err)
+	fmt.Fprintln(os.Stderr, r.Err)
+	os.Exit(1)
 }
