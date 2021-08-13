@@ -8,4 +8,5 @@ var errors = map[string]string{
 	"todo_empty":           "todo is empty. you can add to do thing with `todo add` command",
 	"todo_id_not_found":    "ID ${id} is not exists.",
 	"label_already_exists": "${label} is already exists label",
+	"label_not_found":      "${label} label not found",
 }

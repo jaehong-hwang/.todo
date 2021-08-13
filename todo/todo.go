@@ -57,3 +57,17 @@ func (t *Todo) AddLabel(l *Label) bool {
 	t.Labels = append(t.Labels, l)
 	return true
 }
+
+func (t *Todo) RemoveLabel(labelText string) bool {
+	for i, l := range t.Labels {
+		if l.Text == labelText {
+			for j := i; j < len(t.Labels)-1; j++ {
+				t.Labels[j] = t.Labels[j+1]
+			}
+			t.Labels = t.Labels[:len(t.Labels)-1]
+			return true
+		}
+	}
+
+	return false
+}

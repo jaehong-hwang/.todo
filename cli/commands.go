@@ -188,6 +188,39 @@ var (
 		},
 	}
 
+	removeLabel = &cli.Command{
+		Name:  "remove-label",
+		Flags: []cli.Flag{idFlag},
+		Usage: "remove label from todo",
+		Action: func(c *cli.Context) error {
+			if todoFile.IsExist() == false {
+				return errors.New("todo_doesnt_exists")
+			}
+
+			if c.NArg() == 0 {
+				return errors.New("message_required")
+			}
+
+			id := c.Int("id")
+			todo := collection.GetTodo(id)
+			if todo == nil {
+				return errors.NewWithParam("todo_id_not_found", map[string]string{
+					"id": strconv.Itoa(id),
+				})
+			}
+
+			labelText := c.Args().Get(0)
+			res := todo.RemoveLabel(labelText)
+			if res == false {
+				return errors.NewWithParam("label_not_found", map[string]string{
+					"label": labelText,
+				})
+			}
+
+			return save()
+		},
+	}
+
 	updateCommand = &cli.Command{
 		Name:    "update",
 		Flags:   []cli.Flag{idFlag},
