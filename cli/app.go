@@ -41,6 +41,7 @@ func newApp() *cli.App {
 			listCommand,
 			addCommand,
 			updateCommand,
+			addLabel,
 			stateCommand,
 			waitCommand,
 			workCommand,

@@ -148,12 +148,43 @@ var (
 
 			collection.Add(todo)
 
-			content, err := collection.GetTodosJSONString()
-			if err != nil {
-				return err
+			return save()
+		},
+	}
+
+	addLabel = &cli.Command{
+		Name:  "add-label",
+		Flags: []cli.Flag{idFlag},
+		Usage: "add label to todo",
+		Action: func(c *cli.Context) error {
+			if todoFile.IsExist() == false {
+				return errors.New("todo_doesnt_exists")
 			}
 
-			return todoFile.FillContent(content)
+			if c.NArg() == 0 {
+				return errors.New("message_required")
+			}
+
+			id := c.Int("id")
+			todo := collection.GetTodo(id)
+			if todo == nil {
+				return errors.NewWithParam("todo_id_not_found", map[string]string{
+					"id": strconv.Itoa(id),
+				})
+			}
+
+			labelText := c.Args().Get(0)
+			label := t.Label{
+				Text: labelText,
+			}
+			res := todo.AddLabel(&label)
+			if res == false {
+				return errors.NewWithParam("label_already_exists", map[string]string{
+					"label": labelText,
+				})
+			}
+
+			return save()
 		},
 	}
 
@@ -181,12 +212,7 @@ var (
 
 			todo.Content = c.Args().Get(0)
 
-			content, err := collection.GetTodosJSONString()
-			if err != nil {
-				return err
-			}
-
-			return todoFile.FillContent(content)
+			return save()
 		},
 	}
 
@@ -217,12 +243,7 @@ var (
 
 			collection.Remove(id)
 
-			content, err := collection.GetTodosJSONString()
-			if err != nil {
-				return err
-			}
-
-			return todoFile.FillContent(content)
+			return save()
 		},
 	}
 

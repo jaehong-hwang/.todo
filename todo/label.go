@@ -1,10 +1,22 @@
 package todo
 
+import "strings"
+
 type Label struct {
-	color string
-	text  string
+	Text string
 }
 
-func (l *Label) AddTo(t Todo) {
-	t.Labels = append(t.Labels, l)
+type Labels []*Label
+
+func (l *Label) AddTo(t Todo) bool {
+	return t.AddLabel(l)
+}
+
+func (l *Labels) ToString() string {
+	var strs []string
+	for _, lb := range *l {
+		strs = append(strs, lb.Text)
+	}
+
+	return strings.Join(strs, " / ")
 }
