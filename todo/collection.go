@@ -32,8 +32,13 @@ func NewTodoCollection(todoFile *file.File) *Collection {
 
 // NewTodo from todo list
 func (t *Collection) NewTodo() Todo {
+	id := 0
+	if len(t.Todos) > 0 {
+		id = t.Todos[len(t.Todos)-1].ID + 1
+	}
+
 	todo := Todo{
-		ID:     t.Todos[len(t.Todos)-1].ID + 1,
+		ID:     id,
 		Status: StatusWaiting,
 	}
 
