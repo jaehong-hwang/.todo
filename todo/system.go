@@ -36,6 +36,12 @@ func NewSystem(systemFile *file.File) *System {
 }
 
 func (s *System) AddDirectory(directory string) error {
+	for _, dir := range s.Directories {
+		if dir == directory {
+			return nil
+		}
+	}
+
 	s.Directories = append(s.Directories, directory)
 	return s.Save()
 }
