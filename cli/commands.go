@@ -12,8 +12,26 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// TodoCommands are collection commands
-type TodoCommands []*cli.Command
+func todoCommand(action cli.ActionFunc) cli.ActionFunc {
+	return middleware(
+		[]callback{
+			todoRequireMiddleware,
+			messageRequireMiddleware,
+			authorSettingMiddleware,
+		},
+		action,
+	)
+}
+
+func collectionCommand(action cli.ActionFunc) cli.ActionFunc {
+	return middleware(
+		[]callback{
+			todoRequireMiddleware,
+			authorSettingMiddleware,
+		},
+		action,
+	)
+}
 
 var (
 	initCommand = &cli.Command{
@@ -86,7 +104,7 @@ var (
 		Flags:   []cli.Flag{withDoneFlag, statusFlag, getJsonFlag},
 		Aliases: []string{"l"},
 		Usage:   "Print todos to the list",
-		Action: func(c *cli.Context) error {
+		Action: collectionCommand(func(c *cli.Context) error {
 			var col t.Collection
 
 			status := c.String("status")
@@ -97,10 +115,6 @@ var (
 				col = collection.SearchByStatus([]string{status})
 			} else {
 				col = collection.SearchByStatus([]string{t.StatusWaiting, t.StatusWorking})
-			}
-
-			if todoFile.IsExist() == false {
-				return errors.New("todo_doesnt_exists")
 			}
 
 			if len(col.Todos) == 0 {
@@ -118,26 +132,14 @@ var (
 				appResponse = &response.ListResponse{Todos: col.Todos}
 			}
 			return nil
-		},
+		}),
 	}
 
 	addCommand = &cli.Command{
 		Name:    "add",
 		Aliases: []string{"a"},
 		Usage:   "add todo",
-		Action: func(c *cli.Context) error {
-			if todoFile.IsExist() == false {
-				return errors.New("todo_doesnt_exists")
-			}
-
-			if c.NArg() == 0 {
-				return errors.New("message_required")
-			}
-
-			if system.Author.Name == "" || system.Author.Email == "" {
-				fmt.Println("[Warning] You should set up author setting, `todo config`")
-			}
-
+		Action: todoCommand(func(c *cli.Context) error {
 			todo := collection.NewTodo()
 			todo.Content = c.Args().Get(0)
 			todo.Status = t.StatusWaiting
@@ -149,22 +151,14 @@ var (
 			collection.Add(todo)
 
 			return save()
-		},
+		}),
 	}
 
 	addLabel = &cli.Command{
 		Name:  "add-label",
 		Flags: []cli.Flag{idFlag},
 		Usage: "add label to todo",
-		Action: func(c *cli.Context) error {
-			if todoFile.IsExist() == false {
-				return errors.New("todo_doesnt_exists")
-			}
-
-			if c.NArg() == 0 {
-				return errors.New("message_required")
-			}
-
+		Action: todoCommand(func(c *cli.Context) error {
 			id := c.Int("id")
 			todo := collection.GetTodo(id)
 			if todo == nil {
@@ -185,22 +179,14 @@ var (
 			}
 
 			return save()
-		},
+		}),
 	}
 
 	removeLabel = &cli.Command{
 		Name:  "remove-label",
 		Flags: []cli.Flag{idFlag},
 		Usage: "remove label from todo",
-		Action: func(c *cli.Context) error {
-			if todoFile.IsExist() == false {
-				return errors.New("todo_doesnt_exists")
-			}
-
-			if c.NArg() == 0 {
-				return errors.New("message_required")
-			}
-
+		Action: todoCommand(func(c *cli.Context) error {
 			id := c.Int("id")
 			todo := collection.GetTodo(id)
 			if todo == nil {
@@ -218,7 +204,7 @@ var (
 			}
 
 			return save()
-		},
+		}),
 	}
 
 	updateCommand = &cli.Command{
@@ -226,15 +212,7 @@ var (
 		Flags:   []cli.Flag{idFlag},
 		Aliases: []string{"u"},
 		Usage:   "update todo message",
-		Action: func(c *cli.Context) error {
-			if todoFile.IsExist() == false {
-				return errors.New("todo_doesnt_exists")
-			}
-
-			if c.NArg() == 0 {
-				return errors.New("message_required")
-			}
-
+		Action: todoCommand(func(c *cli.Context) error {
 			id := c.Int("id")
 			todo := collection.GetTodo(id)
 			if todo == nil {
@@ -246,7 +224,7 @@ var (
 			todo.Content = c.Args().Get(0)
 
 			return save()
-		},
+		}),
 	}
 
 	removeCommand = &cli.Command{
@@ -254,11 +232,7 @@ var (
 		Flags:   []cli.Flag{idFlag},
 		Aliases: []string{"rm"},
 		Usage:   "remove todo message",
-		Action: func(c *cli.Context) error {
-			if todoFile.IsExist() == false {
-				return errors.New("todo_doesnt_exists")
-			}
-
+		Action: collectionCommand(func(c *cli.Context) error {
 			id := c.Int("id")
 			todo := collection.GetTodo(id)
 			if todo == nil {
@@ -277,17 +251,13 @@ var (
 			collection.Remove(id)
 
 			return save()
-		},
+		}),
 	}
 
 	removeCollectionCommand = &cli.Command{
 		Name:  "remove-collection",
 		Usage: "remove current todo collection",
-		Action: func(c *cli.Context) error {
-			if todoFile.IsExist() == false {
-				return errors.New("todo_doesnt_exists")
-			}
-
+		Action: collectionCommand(func(c *cli.Context) error {
 			yn := "y"
 			fmt.Print("Do you want remove current todo collection? (y, n): ")
 			fmt.Scanln(&yn)
@@ -296,6 +266,6 @@ var (
 			}
 
 			return todoFile.Remove()
-		},
+		}),
 	}
 )
