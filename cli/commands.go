@@ -91,10 +91,20 @@ var (
 
 	directoriesCommand = &cli.Command{
 		Name:    "directories",
+		Flags:   []cli.Flag{getJsonFlag},
 		Aliases: []string{"d"},
 		Usage:   "Print directories of todo collection",
 		Action: func(c *cli.Context) error {
-			appResponse = &response.DirectoryResponse{Directories: system.Directories}
+			if c.Bool("get-json") {
+				json, err := system.GetDirectoryJson()
+				if err == nil {
+					appResponse = &response.MessageResponse{Message: json}
+				} else {
+					appResponse = &response.ErrorResponse{Err: err}
+				}
+			} else {
+				appResponse = &response.DirectoryResponse{Directories: system.Directories}
+			}
 			return nil
 		},
 	}

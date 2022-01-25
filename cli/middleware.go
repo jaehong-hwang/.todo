@@ -7,16 +7,16 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type callback func (*cli.Context) error
+type callback func(*cli.Context) error
 
 func errorCommandAction(err error) cli.ActionFunc {
-	return func (c *cli.Context) error {
+	return func(c *cli.Context) error {
 		return err
 	}
 }
 
 func middleware(middlewares []callback, action cli.ActionFunc) cli.ActionFunc {
-	return func (c *cli.Context) error {
+	return func(c *cli.Context) error {
 		for _, middlewareFunc := range middlewares {
 			err := middlewareFunc(c)
 			if err != nil {

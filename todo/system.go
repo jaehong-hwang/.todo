@@ -46,6 +46,15 @@ func (s *System) AddDirectory(directory string) error {
 	return s.Save()
 }
 
+func (s *System) GetDirectoryJson() (string, error) {
+	b, err := json.Marshal(s.Directories)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
+}
+
 func (s *System) Save() error {
 	jsonData, err := json.Marshal(s)
 	if err != nil {
