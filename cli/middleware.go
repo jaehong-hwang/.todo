@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/jaehong-hwang/todo/errors"
+	"github.com/jaehong-hwang/todo/file"
+	"github.com/jaehong-hwang/todo/todo"
 	"github.com/urfave/cli/v2"
 )
 
@@ -48,6 +50,14 @@ func authorSettingMiddleware(c *cli.Context) error {
 	if system.Author.Name == "" || system.Author.Email == "" {
 		fmt.Println("[Warning] You should set up author setting, `todo config`")
 	}
+
+	return nil
+}
+
+func userDirectoryMiddleware(c *cli.Context) error {
+	dir := c.String("directory")
+	todoFile = file.FindTodoFileWithDirectory(dir)
+	collection = todo.NewTodoCollection(todoFile)
 
 	return nil
 }

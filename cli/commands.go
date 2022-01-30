@@ -15,6 +15,7 @@ import (
 func todoCommand(action cli.ActionFunc) cli.ActionFunc {
 	return middleware(
 		[]callback{
+			userDirectoryMiddleware,
 			todoRequireMiddleware,
 			messageRequireMiddleware,
 			authorSettingMiddleware,
@@ -26,6 +27,7 @@ func todoCommand(action cli.ActionFunc) cli.ActionFunc {
 func collectionCommand(action cli.ActionFunc) cli.ActionFunc {
 	return middleware(
 		[]callback{
+			userDirectoryMiddleware,
 			todoRequireMiddleware,
 			authorSettingMiddleware,
 		},
@@ -111,7 +113,7 @@ var (
 
 	listCommand = &cli.Command{
 		Name:    "list",
-		Flags:   []cli.Flag{withDoneFlag, statusFlag, getJsonFlag},
+		Flags:   []cli.Flag{withDoneFlag, statusFlag, getJsonFlag, dirFlag},
 		Aliases: []string{"l"},
 		Usage:   "Print todos to the list",
 		Action: collectionCommand(func(c *cli.Context) error {

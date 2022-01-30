@@ -35,4 +35,9 @@ var (
 		Name:  "get-json",
 		Usage: "return in Json format",
 	}
+
+	dirFlag = &cli.StringFlag{
+		Name:  "directory",
+		Usage: "action with directory flag",
+	}
 )

@@ -27,6 +27,16 @@ func FindTodoFile() *File {
 	return file
 }
 
+// FindTodoFile from current directory
+func FindTodoFileWithDirectory(dir string) *File {
+	file := FindFromDirectory(todoFileName, dir)
+	if file != nil {
+		file.Permission = todoFilePermission
+	}
+
+	return file
+}
+
 // FindTodoSystemFile from home directory
 func FindTodoSystemFile() *File {
 	usr, err := user.Current()
