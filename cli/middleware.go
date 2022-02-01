@@ -11,12 +11,6 @@ import (
 
 type callback func(*cli.Context) error
 
-func errorCommandAction(err error) cli.ActionFunc {
-	return func(c *cli.Context) error {
-		return err
-	}
-}
-
 func middleware(middlewares []callback, action cli.ActionFunc) cli.ActionFunc {
 	return func(c *cli.Context) error {
 		for _, middlewareFunc := range middlewares {

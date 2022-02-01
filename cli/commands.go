@@ -97,16 +97,7 @@ var (
 		Aliases: []string{"d"},
 		Usage:   "Print directories of todo collection",
 		Action: func(c *cli.Context) error {
-			if c.Bool("get-json") {
-				json, err := system.GetDirectoryJson()
-				if err == nil {
-					appResponse = &response.MessageResponse{Message: json}
-				} else {
-					appResponse = &response.ErrorResponse{Err: err}
-				}
-			} else {
-				appResponse = &response.DirectoryResponse{Directories: system.Directories}
-			}
+			appResponse = &response.DirectoryResponse{Directories: system.Directories}
 			return nil
 		},
 	}
@@ -133,16 +124,7 @@ var (
 				return errors.New("todo_empty")
 			}
 
-			if c.Bool("get-json") {
-				json, err := col.GetTodosJSONString()
-				if err == nil {
-					appResponse = &response.MessageResponse{Message: json}
-				} else {
-					appResponse = &response.ErrorResponse{Err: err}
-				}
-			} else {
-				appResponse = &response.ListResponse{Todos: col.Todos}
-			}
+			appResponse = &response.ListResponse{Collection: col}
 			return nil
 		}),
 	}

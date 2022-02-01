@@ -10,20 +10,25 @@ import (
 
 // ListResponse is todo list response to string
 type ListResponse struct {
-	Todos todo.Todos
+	Collection todo.Collection
 }
 
 // Print todos by string like table
-func (r *ListResponse) Print() {
-	var output []string
+func (r *ListResponse) Print(isJson bool) {
+	if isJson {
+		str, _ := r.Collection.GetTodosJSONString()
+		fmt.Println(str)
+	} else {
+		var output []string
 
-	fields := todo.GetFields()
-	output = append(output, strings.Join(fields[:], " | "))
+		fields := todo.GetFields()
+		output = append(output, strings.Join(fields[:], " | "))
 
-	for _, todo := range r.Todos {
-		fieldText := todo.ToStringSlice()
-		output = append(output, strings.Join(fieldText[:], " | "))
+		for _, todo := range r.Collection.Todos {
+			fieldText := todo.ToStringSlice()
+			output = append(output, strings.Join(fieldText[:], " | "))
+		}
+
+		fmt.Println(columnize.SimpleFormat(output))
 	}
-
-	fmt.Println(columnize.SimpleFormat(output))
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	if response := cli.Run(os.Args); response != nil {
-		response.Print()
+	if response, isJson := cli.Run(os.Args); response != nil {
+		response.Print(isJson)
 	}
 }
