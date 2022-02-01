@@ -1,7 +1,9 @@
 package response
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/jaehong-hwang/todo/todo"
 )
@@ -12,12 +14,21 @@ type DirectoryResponse struct {
 }
 
 // Print todos by string like table
-func (r *DirectoryResponse) Print() {
-	output := ""
+func (r *DirectoryResponse) Print(isJson bool) {
+	if isJson {
+		b, err := json.Marshal(r.Directories)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
 
-	for _, directory := range r.Directories {
-		output = output + directory + "\n"
+		fmt.Println(string(b))
+	} else {
+		output := ""
+
+		for _, directory := range r.Directories {
+			output = output + directory + "\n"
+		}
+
+		fmt.Println(output)
 	}
-
-	fmt.Println(output)
 }

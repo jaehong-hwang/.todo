@@ -21,6 +21,7 @@ var (
 	todoSystemFile = file.FindTodoSystemFile()
 	collection     = todo.NewTodoCollection(todoFile)
 	system         = todo.NewSystem(todoSystemFile)
+	isJson         bool
 )
 
 var appResponse response.Response
@@ -50,16 +51,24 @@ func newApp() *cli.App {
 			removeCommand,
 			removeCollectionCommand,
 		},
+		After: func(c *cli.Context) error {
+			for _, val := range c.Args().Slice() {
+				if val == "--get-json" {
+					isJson = true
+				}
+			}
+			return nil
+		},
 	}
 
 	return cliApp
 }
 
-// Run to running correct command
-func Run(args []string) response.Response {
+// Run to running correct command, first is
+func Run(args []string) (response.Response, bool) {
 	if err := app.Run(args); err != nil {
-		return &response.ErrorResponse{Err: err}
+		return &response.ErrorResponse{Err: err}, isJson
 	}
 
-	return appResponse
+	return appResponse, isJson
 }

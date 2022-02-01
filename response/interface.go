@@ -2,5 +2,5 @@ package response
 
 // Response interface
 type Response interface {
-	Print()
+	Print(isJson bool)
 }
