@@ -50,8 +50,10 @@ func authorSettingMiddleware(c *cli.Context) error {
 
 func userDirectoryMiddleware(c *cli.Context) error {
 	dir := c.String("directory")
-	todoFile = file.FindTodoFileWithDirectory(dir)
-	collection = todo.NewTodoCollection(todoFile)
+	if dir != "" {
+		todoFile = file.FindTodoFileWithDirectory(dir)
+		collection = todo.NewTodoCollection(todoFile)
+	}
 
 	return nil
 }
