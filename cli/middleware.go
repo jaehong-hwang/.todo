@@ -47,7 +47,7 @@ func messageRequireMiddleware(c *cli.Context) error {
 }
 
 func authorSettingMiddleware(c *cli.Context) error {
-	if system.Author.Name == "" || system.Author.Email == "" {
+	if (system.Author.Name == "" || system.Author.Email == "") && c.Bool("get-json") == false {
 		fmt.Println("[Warning] You should set up author setting, `todo config`")
 	}
 
