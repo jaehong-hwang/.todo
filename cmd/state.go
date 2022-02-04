@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"github.com/jaehong-hwang/todo/errors"
-	"github.com/jaehong-hwang/todo/todo"
 	"github.com/spf13/cobra"
 )
 
@@ -10,27 +8,6 @@ var (
 	stateCmd = &cobra.Command{
 		Use:   "state",
 		Short: "update state",
-		Args: func(c *cobra.Command, args []string) error {
-			if len(args) < 1 {
-				return errors.New("requires a state argument")
-			}
-			if todo.IsValidStatus(args[0]) {
-				return nil
-			}
-			return errors.NewWithParam("unexpected_state", map[string]string{
-				"state": args[0],
-			})
-		},
-		RunE: func(c *cobra.Command, args []string) error {
-			id, err := c.Flags().GetInt("id")
-			if err != nil {
-				return err
-			}
-
-			status := args[0]
-
-			return updateState(id, status)
-		},
 	}
 
 	waitCmd = &cobra.Command{
@@ -54,9 +31,9 @@ var (
 
 func init() {
 	rootCmd.AddCommand(stateCmd)
-	rootCmd.AddCommand(waitCmd)
-	rootCmd.AddCommand(workCmd)
-	rootCmd.AddCommand(doneCmd)
+	stateCmd.AddCommand(waitCmd)
+	stateCmd.AddCommand(workCmd)
+	stateCmd.AddCommand(doneCmd)
 }
 
 func getUpdatingStateAction(state string) func(c *cobra.Command, args []string) error {
@@ -77,7 +54,6 @@ func updateState(id int, status string) error {
 	}
 
 	todo.Status = status
-
 	content, err := collection.GetTodosJSONString()
 	if err != nil {
 		return err
