@@ -26,9 +26,6 @@ var rootCmd = &cobra.Command{
 	Long: `.todo was created with a motif from git.
 				It is a tool that creates a .todo file that manages to-dos by directory, shows list, and manages.
 				For detailed explanation, see https://jaehong-hwang.github.com/todo`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
-	},
 }
 
 func requireArgs(c *cobra.Command, args []string) error {
