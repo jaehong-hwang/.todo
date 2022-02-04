@@ -2,7 +2,9 @@ package todo
 
 import (
 	"encoding/json"
+	"strconv"
 
+	"github.com/jaehong-hwang/todo/errors"
 	"github.com/jaehong-hwang/todo/file"
 )
 
@@ -66,14 +68,16 @@ func (t *Collection) Remove(id int) bool {
 }
 
 // GetTodo by id
-func (t *Collection) GetTodo(id int) *Todo {
+func (t *Collection) GetTodo(id int) (*Todo, error) {
 	for i, todo := range t.Todos {
 		if todo.ID == id {
-			return &t.Todos[i]
+			return &t.Todos[i], nil
 		}
 	}
 
-	return nil
+	return nil, errors.NewWithParam("todo_id_not_found", map[string]string{
+		"id": strconv.Itoa(id),
+	})
 }
 
 // SearchByStatus from current collection

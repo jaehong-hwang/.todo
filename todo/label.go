@@ -8,7 +8,7 @@ type Label struct {
 
 type Labels []*Label
 
-func (l *Label) AddTo(t Todo) bool {
+func (l *Label) AddTo(t Todo) error {
 	return t.AddLabel(l)
 }
 
