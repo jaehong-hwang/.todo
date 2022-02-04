@@ -6,6 +6,11 @@ import (
 )
 
 var (
+	labelCmd = &cobra.Command{
+		Use:   "label",
+		Short: "label management command",
+	}
+
 	labelAddCmd = &cobra.Command{
 		Use:   "add-label",
 		Short: "add label to todo",
@@ -62,6 +67,7 @@ var (
 )
 
 func init() {
-	rootCmd.AddCommand(labelAddCmd)
-	rootCmd.AddCommand(labelRemoveCmd)
+	rootCmd.AddCommand(labelCmd)
+	labelCmd.AddCommand(labelAddCmd)
+	labelCmd.AddCommand(labelRemoveCmd)
 }
