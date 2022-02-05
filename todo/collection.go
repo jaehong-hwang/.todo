@@ -42,6 +42,7 @@ func (t *Collection) NewTodo() Todo {
 	todo := Todo{
 		ID:     id,
 		Status: StatusWaiting,
+		Level:  TodoLevels[0],
 	}
 
 	return todo

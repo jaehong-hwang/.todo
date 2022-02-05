@@ -14,6 +14,10 @@ const (
 	StatusDone    = "done"
 )
 
+var (
+	TodoLevels = []int{0, 1, 2, 3}
+)
+
 func IsValidStatus(status string) bool {
 	return status == StatusWaiting || status == StatusWorking || status == StatusDone
 }
@@ -28,6 +32,7 @@ type Todo struct {
 	Start       time.Time `json:"start"`
 	End         time.Time `json:"end"`
 	Labels      Labels    `json:"label"`
+	Level       int       `json:"level"`
 }
 
 func GetFields() []string {
@@ -50,6 +55,7 @@ func (t *Todo) ToStringSlice() []string {
 		t.Start.Format("2006.01.02 15:04"),
 		t.End.Format("2006.01.02 15:04"),
 		t.Labels.ToString(),
+		strconv.Itoa(t.Level),
 	}
 }
 
