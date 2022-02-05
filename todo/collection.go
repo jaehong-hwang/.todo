@@ -13,7 +13,8 @@ type Todos []Todo
 
 // Collection is manage .todo filesystem
 type Collection struct {
-	Todos Todos
+	Todos  Todos
+	Filter Filters
 }
 
 // NewTodoCollection returned
@@ -70,7 +71,7 @@ func (t *Collection) Remove(id int) bool {
 
 // GetTodo by id
 func (t *Collection) GetTodo(id int) (*Todo, error) {
-	for i, todo := range t.Todos {
+	for i, todo := range t.Filter.GetList(t.Todos) {
 		if todo.ID == id {
 			return &t.Todos[i], nil
 		}
@@ -81,23 +82,9 @@ func (t *Collection) GetTodo(id int) (*Todo, error) {
 	})
 }
 
-// SearchByStatus from current collection
-func (t *Collection) SearchByStatus(status []string) Collection {
-	todos := Todos{}
-	for _, todo := range t.Todos {
-		for _, s := range status {
-			if s == todo.Status {
-				todos = append(todos, todo)
-				break
-			}
-		}
-	}
-	return Collection{Todos: todos}
-}
-
 // GetTodosJSONString from current collection
 func (t *Collection) GetTodosJSONString() (string, error) {
-	b, err := json.Marshal(t.Todos)
+	b, err := json.Marshal(t.Filter.GetList(t.Todos))
 	if err != nil {
 		return "", err
 	}

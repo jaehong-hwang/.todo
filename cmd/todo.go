@@ -28,12 +28,9 @@ var (
 				return err
 			}
 
-			if withDone == true {
-				col = *collection
-			} else if status != "" {
-				col = collection.SearchByStatus([]string{status})
-			} else {
-				col = collection.SearchByStatus([]string{t.StatusWaiting, t.StatusWorking})
+			col.Filter = t.Filters{
+				Status:   []string{status},
+				WithDone: withDone,
 			}
 
 			if len(col.Todos) == 0 {
