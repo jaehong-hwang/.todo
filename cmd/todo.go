@@ -54,8 +54,7 @@ var (
 			todo.Status = t.StatusWaiting
 			todo.Author = system.Author.Name
 			todo.AuthorEmail = system.Author.Email
-			todo.Start = time.Now()
-			todo.End = time.Now()
+			todo.RegistDate = time.Now()
 
 			collection.Add(todo)
 
