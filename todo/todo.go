@@ -18,8 +18,14 @@ var (
 	TodoLevels = []int{0, 1, 2, 3}
 )
 
-func IsValidStatus(status string) bool {
-	return status == StatusWaiting || status == StatusWorking || status == StatusDone
+func IsValidStatus(status string) error {
+	if status != StatusWaiting && status != StatusWorking && status != StatusDone {
+		return errors.NewWithParam("unexpected_state", map[string]string{
+			"state": status,
+		})
+	}
+
+	return nil
 }
 
 // Todo unit struct
