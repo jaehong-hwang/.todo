@@ -19,9 +19,7 @@ var (
 			status, err := c.Flags().GetString("status")
 			if err != nil {
 				return err
-			}
-
-			if status != "" {
+			} else if status != "" {
 				collection.Filter.Status = []string{status}
 			}
 
@@ -30,7 +28,13 @@ var (
 				return err
 			}
 
+			author, err := c.Flags().GetString("author")
+			if err != nil {
+				return err
+			}
+
 			collection.Filter.WithDone = withDone
+			collection.Filter.Author = author
 
 			todos := collection.GetList()
 
@@ -118,6 +122,7 @@ var (
 func init() {
 	listCmd.PersistentFlags().String("status", "", "search status")
 	listCmd.PersistentFlags().Bool("with-done", false, "showing list with done status todo")
+	listCmd.PersistentFlags().String("author", "", "search author name or email")
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(listCmd)

@@ -1,9 +1,14 @@
 package todo
 
+import (
+	"strings"
+)
+
 // Filters is list filter of collection
 type Filters struct {
 	WithDone bool
 	Status   []string
+	Author   string
 }
 
 // GetList with current filter
@@ -24,6 +29,12 @@ func (f *Filters) GetList(t Todos) Todos {
 					break
 				}
 			}
+		}
+
+		if f.Author != "" {
+			isValidate = isValidate &&
+				(strings.Contains(todo.Author, f.Author) ||
+					strings.Contains(todo.AuthorEmail, f.Author))
 		}
 
 		if isValidate {
