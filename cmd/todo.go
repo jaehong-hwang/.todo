@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jaehong-hwang/todo/errors"
@@ -78,7 +79,9 @@ var (
 				return err
 			}
 
-			todo.Content = args[0]
+			if len(args) > 0 && strings.TrimSpace(args[0]) != "" {
+				todo.Content = args[0]
+			}
 
 			setTodoFlagAttr(c, todo)
 
