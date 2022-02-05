@@ -18,8 +18,14 @@ var (
 	TodoLevels = []int{0, 1, 2, 3}
 )
 
-func IsValidStatus(status string) bool {
-	return status == StatusWaiting || status == StatusWorking || status == StatusDone
+func IsValidStatus(status string) error {
+	if status != StatusWaiting && status != StatusWorking && status != StatusDone {
+		return errors.NewWithParam("unexpected_state", map[string]string{
+			"state": status,
+		})
+	}
+
+	return nil
 }
 
 // Todo unit struct
@@ -29,8 +35,8 @@ type Todo struct {
 	Author      string    `json:"author"`
 	AuthorEmail string    `json:"authorEmail"`
 	Content     string    `json:"content"`
-	Start       time.Time `json:"start"`
-	End         time.Time `json:"end"`
+	RegistDate  time.Time `json:"regist-date"`
+	DueDate     time.Time `json:"due-date"`
 	Labels      Labels    `json:"label"`
 	Level       int       `json:"level"`
 }
@@ -52,8 +58,8 @@ func (t *Todo) ToStringSlice() []string {
 		t.Author,
 		t.AuthorEmail,
 		t.Content,
-		t.Start.Format("2006.01.02 15:04"),
-		t.End.Format("2006.01.02 15:04"),
+		t.RegistDate.Format("2006.01.02 15:04"),
+		t.DueDate.Format("2006.01.02 15:04"),
 		t.Labels.ToString(),
 		strconv.Itoa(t.Level),
 	}

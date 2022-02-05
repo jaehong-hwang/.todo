@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jaehong-hwang/todo/errors"
@@ -54,8 +55,9 @@ var (
 			todo.Status = t.StatusWaiting
 			todo.Author = system.Author.Name
 			todo.AuthorEmail = system.Author.Email
-			todo.Start = time.Now()
-			todo.End = time.Now()
+			todo.RegistDate = time.Now()
+
+			setTodoFlagAttr(c, &todo)
 
 			collection.Add(todo)
 
@@ -66,7 +68,6 @@ var (
 	updateCmd = &cobra.Command{
 		Use:   "update",
 		Short: "update todo message",
-		Args:  requireArgs,
 		RunE: func(c *cobra.Command, args []string) error {
 			id, err := c.Flags().GetInt("id")
 			if err != nil {
@@ -78,7 +79,11 @@ var (
 				return err
 			}
 
-			todo.Content = args[0]
+			if len(args) > 0 && strings.TrimSpace(args[0]) != "" {
+				todo.Content = args[0]
+			}
+
+			setTodoFlagAttr(c, todo)
 
 			return save()
 		},
@@ -120,4 +125,37 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(updateCmd)
 	rootCmd.AddCommand(removeCmd)
+}
+
+func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
+	level, err := c.Flags().GetInt("level")
+	if err != nil {
+		return err
+	} else if level > 0 {
+		todo.Level = level
+	}
+
+	status, err := c.Flags().GetString("status")
+	if err != nil {
+		return err
+	} else if err = t.IsValidStatus(status); err != nil {
+		return err
+	} else {
+		todo.Status = status
+	}
+
+	dueDate, err := c.Flags().GetString("due-date")
+	if err != nil {
+		return err
+	} else if dueDate != "" {
+		layout := "2006-01-02T15:04:05.000Z"
+		todoTime, err := time.Parse(layout, dueDate)
+		if err != nil {
+			return err
+		}
+
+		todo.DueDate = todoTime
+	}
+
+	return nil
 }
