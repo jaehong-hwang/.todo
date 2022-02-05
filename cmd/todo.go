@@ -141,17 +141,19 @@ func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
 	status, err := c.Flags().GetString("status")
 	if err != nil {
 		return err
-	} else if err = t.IsValidStatus(status); err != nil {
-		return err
-	} else {
-		todo.Status = status
+	} else if status != "" {
+		if err = t.IsValidStatus(status); err != nil {
+			return err
+		} else {
+			todo.Status = status
+		}
 	}
 
 	dueDate, err := c.Flags().GetString("due-date")
 	if err != nil {
 		return err
 	} else if dueDate != "" {
-		layout := "2006-01-02T15:04:05.000Z"
+		layout := "2006-01-02"
 		todoTime, err := time.Parse(layout, dueDate)
 		if err != nil {
 			return err
