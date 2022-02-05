@@ -16,11 +16,13 @@ var (
 		Use:   "list",
 		Short: "Print todos to the list",
 		RunE: func(c *cobra.Command, args []string) error {
-			var col t.Collection
-
 			status, err := c.Flags().GetString("status")
 			if err != nil {
 				return err
+			}
+
+			if status != "" {
+				collection.Filter.Status = []string{status}
 			}
 
 			withDone, err := c.Flags().GetBool("with-done")
@@ -28,16 +30,15 @@ var (
 				return err
 			}
 
-			col.Filter = t.Filters{
-				Status:   []string{status},
-				WithDone: withDone,
-			}
+			collection.Filter.WithDone = withDone
 
-			if len(col.Todos) == 0 {
+			todos := collection.GetList()
+
+			if len(todos) == 0 {
 				return errors.New("todo_empty")
 			}
 
-			appResponse = &response.ListResponse{Collection: col}
+			appResponse = &response.ListResponse{Collection: collection}
 			return nil
 		},
 	}

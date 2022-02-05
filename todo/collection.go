@@ -82,6 +82,10 @@ func (t *Collection) GetTodo(id int) (*Todo, error) {
 	})
 }
 
+func (t *Collection) GetList() Todos {
+	return t.Filter.GetList(t.Todos)
+}
+
 // GetTodosJSONString from current collection
 func (t *Collection) GetTodosJSONString() (string, error) {
 	b, err := json.Marshal(t.Filter.GetList(t.Todos))

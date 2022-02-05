@@ -10,7 +10,7 @@ import (
 
 // ListResponse is todo list response to string
 type ListResponse struct {
-	Collection todo.Collection
+	Collection *todo.Collection
 }
 
 // Print todos by string like table
@@ -24,7 +24,7 @@ func (r *ListResponse) Print(isJson bool) {
 		fields := todo.GetFields()
 		output = append(output, strings.Join(fields[:], " | "))
 
-		for _, todo := range r.Collection.Todos {
+		for _, todo := range r.Collection.GetList() {
 			fieldText := todo.ToStringSlice()
 			output = append(output, strings.Join(fieldText[:], " | "))
 		}

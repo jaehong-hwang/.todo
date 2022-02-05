@@ -11,6 +11,11 @@ func (f *Filters) GetList(t Todos) Todos {
 	todos := Todos{}
 	for _, todo := range t {
 		isValidate := true
+
+		if f.WithDone == false {
+			isValidate = todo.Status == StatusWaiting || todo.Status == StatusWorking
+		}
+
 		if len(f.Status) > 0 {
 			isValidate = false
 			for _, s := range f.Status {
@@ -18,10 +23,6 @@ func (f *Filters) GetList(t Todos) Todos {
 					isValidate = true
 					break
 				}
-			}
-
-			if f.WithDone {
-				isValidate = todo.Status == StatusDone
 			}
 		}
 
