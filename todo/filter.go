@@ -12,11 +12,16 @@ func (f *Filters) GetList(t Todos) Todos {
 	for _, todo := range t {
 		isValidate := true
 		if len(f.Status) > 0 {
+			isValidate = false
 			for _, s := range f.Status {
 				if s == todo.Status {
 					isValidate = true
 					break
 				}
+			}
+
+			if f.WithDone {
+				isValidate = todo.Status == StatusDone
 			}
 		}
 
