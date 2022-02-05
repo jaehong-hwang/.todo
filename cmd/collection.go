@@ -66,6 +66,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(collectionCmd)
+	rootCmd.AddCommand(collectionInitCmd)
 	collectionCmd.AddCommand(collectionInitCmd)
 	collectionCmd.AddCommand(collectionListCmd)
 	collectionCmd.AddCommand(collectionRemoveCmd)
