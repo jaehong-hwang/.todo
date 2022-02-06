@@ -24,7 +24,7 @@ func (r *ListResponse) Print(isJson bool) {
 		fields := todo.GetFields()
 		output = append(output, strings.Join(fields[:], " | "))
 
-		for _, todo := range r.Collection.GetList() {
+		for _, todo := range r.Collection.Todos {
 			fieldText := todo.ToStringSlice()
 			output = append(output, strings.Join(fieldText[:], " | "))
 		}
