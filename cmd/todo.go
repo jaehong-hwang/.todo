@@ -33,6 +33,11 @@ var (
 				return err
 			}
 
+			_, err = c.Flags().GetString("due-date-start")
+			if err != nil {
+				return err
+			}
+
 			collection.Filter.WithDone = withDone
 			collection.Filter.Author = author
 
@@ -85,7 +90,9 @@ var (
 				todo.Content = args[0]
 			}
 
-			setTodoFlagAttr(c, todo)
+			if err = setTodoFlagAttr(c, todo); err != nil {
+				return err
+			}
 
 			return save()
 		},
@@ -123,6 +130,8 @@ func init() {
 	listCmd.PersistentFlags().String("status", "", "search status")
 	listCmd.PersistentFlags().Bool("with-done", false, "showing list with done status todo")
 	listCmd.PersistentFlags().String("author", "", "search author name or email")
+	listCmd.PersistentFlags().String("due-date-start", "", "search due-date start time")
+	listCmd.PersistentFlags().String("due-date-end", "", "search due-date start end")
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(listCmd)
