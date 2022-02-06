@@ -40,12 +40,10 @@ func (f *Filters) Run(c *Collection) *Collection {
 					strings.Contains(todo.AuthorEmail, f.Author))
 		}
 
-		startYear, startMonth, startDate := f.DueDateStart.Date()
-		isValidate = isValidate && todo.DueDate.Year() >= startYear && int(todo.DueDate.Month()) >= int(startMonth) && todo.DueDate.Day() >= startDate
+		isValidate = isValidate && todo.DueDate.Unix() >= f.DueDateStart.Unix()
 
 		if f.DueDateEnd.Year() > 1 {
-			endYear, endMonth, endDate := f.DueDateEnd.Date()
-			isValidate = isValidate && todo.DueDate.Year() <= endYear && int(todo.DueDate.Month()) <= int(endMonth) && todo.DueDate.Day() <= endDate
+			isValidate = isValidate && todo.DueDate.Unix() <= f.DueDateEnd.Unix()
 		}
 
 		if isValidate {
