@@ -14,10 +14,10 @@ type Filters struct {
 	DueDateEnd   time.Time
 }
 
-// GetList with current filter
-func (f *Filters) GetList(t Todos) Todos {
-	todos := Todos{}
-	for _, todo := range t {
+// Run filter, return filtered collection
+func (f *Filters) Run(c *Collection) *Collection {
+	col := Collection{}
+	for _, todo := range c.Todos {
 		isValidate := true
 
 		if f.WithDone == false {
@@ -40,17 +40,15 @@ func (f *Filters) GetList(t Todos) Todos {
 					strings.Contains(todo.AuthorEmail, f.Author))
 		}
 
-		startYear, startMonth, startDate := f.DueDateStart.Date()
-		isValidate = isValidate && todo.DueDate.Year() >= startYear && int(todo.DueDate.Month()) >= int(startMonth) && todo.DueDate.Day() >= startDate
+		isValidate = isValidate && todo.DueDate.Unix() >= f.DueDateStart.Unix()
 
 		if f.DueDateEnd.Year() > 1 {
-			endYear, endMonth, endDate := f.DueDateEnd.Date()
-			isValidate = isValidate && todo.DueDate.Year() <= endYear && int(todo.DueDate.Month()) <= int(endMonth) && todo.DueDate.Day() <= endDate
+			isValidate = isValidate && todo.DueDate.Unix() <= f.DueDateEnd.Unix()
 		}
 
 		if isValidate {
-			todos = append(todos, todo)
+			col.Todos = append(col.Todos, todo)
 		}
 	}
-	return todos
+	return &col
 }
