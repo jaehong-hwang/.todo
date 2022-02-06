@@ -14,10 +14,10 @@ type Filters struct {
 	DueDateEnd   time.Time
 }
 
-// GetList with current filter
-func (f *Filters) GetList(t Todos) Todos {
-	todos := Todos{}
-	for _, todo := range t {
+// Run filter, return filtered collection
+func (f *Filters) Run(c *Collection) *Collection {
+	col := Collection{}
+	for _, todo := range c.Todos {
 		isValidate := true
 
 		if f.WithDone == false {
@@ -49,8 +49,8 @@ func (f *Filters) GetList(t Todos) Todos {
 		}
 
 		if isValidate {
-			todos = append(todos, todo)
+			col.Todos = append(col.Todos, todo)
 		}
 	}
-	return todos
+	return &col
 }

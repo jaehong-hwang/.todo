@@ -5,6 +5,7 @@ import (
 
 	"github.com/jaehong-hwang/todo/errors"
 	"github.com/jaehong-hwang/todo/response"
+	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/spf13/cobra"
 )
 
@@ -13,10 +14,11 @@ var listCmd = &cobra.Command{
 	Short: "Print todos to the list",
 	RunE: func(c *cobra.Command, args []string) error {
 		status, err := c.Flags().GetString("status")
+		filter := t.Filters{}
 		if err != nil {
 			return err
 		} else if status != "" {
-			collection.Filter.Status = []string{status}
+			filter.Status = []string{status}
 		}
 
 		withDone, err := c.Flags().GetBool("with-done")
@@ -39,7 +41,7 @@ var listCmd = &cobra.Command{
 				return err
 			}
 
-			collection.Filter.DueDateStart = dueDateStartTime
+			filter.DueDateStart = dueDateStartTime
 		}
 
 		dueDateEnd, err := c.Flags().GetString("due-date-end")
@@ -52,19 +54,19 @@ var listCmd = &cobra.Command{
 				return err
 			}
 
-			collection.Filter.DueDateEnd = dueDateEndTime
+			filter.DueDateEnd = dueDateEndTime
 		}
 
-		collection.Filter.WithDone = withDone
-		collection.Filter.Author = author
+		filter.WithDone = withDone
+		filter.Author = author
 
-		todos := collection.GetList()
+		col := filter.Run(collection)
 
-		if len(todos) == 0 {
+		if len(col.Todos) == 0 {
 			return errors.New("todo_empty")
 		}
 
-		appResponse = &response.ListResponse{Collection: collection}
+		appResponse = &response.ListResponse{Collection: col}
 		return nil
 	},
 }
