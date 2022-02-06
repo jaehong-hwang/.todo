@@ -59,7 +59,7 @@ func (t *Todo) ToStringSlice() []string {
 		t.AuthorEmail,
 		t.Content,
 		t.RegistDate.Format("2006.01.02 15:04"),
-		t.DueDate.Format("2006.01.02 15:04"),
+		t.DueDate.Format("2006.01.02"),
 		t.Labels.ToString(),
 		strconv.Itoa(t.Level),
 	}

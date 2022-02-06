@@ -16,11 +16,11 @@ var (
 		Use:   "list",
 		Short: "Print todos to the list",
 		RunE: func(c *cobra.Command, args []string) error {
-			var col t.Collection
-
 			status, err := c.Flags().GetString("status")
 			if err != nil {
 				return err
+			} else if status != "" {
+				collection.Filter.Status = []string{status}
 			}
 
 			withDone, err := c.Flags().GetBool("with-done")
@@ -28,19 +28,47 @@ var (
 				return err
 			}
 
-			if withDone == true {
-				col = *collection
-			} else if status != "" {
-				col = collection.SearchByStatus([]string{status})
-			} else {
-				col = collection.SearchByStatus([]string{t.StatusWaiting, t.StatusWorking})
+			author, err := c.Flags().GetString("author")
+			if err != nil {
+				return err
 			}
 
-			if len(col.Todos) == 0 {
+			dueDateStart, err := c.Flags().GetString("due-date-start")
+			if err != nil {
+				return err
+			} else if dueDateStart != "" {
+				layout := "2006-01-02"
+				dueDateStartTime, err := time.Parse(layout, dueDateStart)
+				if err != nil {
+					return err
+				}
+
+				collection.Filter.DueDateStart = dueDateStartTime
+			}
+
+			dueDateEnd, err := c.Flags().GetString("due-date-end")
+			if err != nil {
+				return err
+			} else if dueDateEnd != "" {
+				layout := "2006-01-02"
+				dueDateEndTime, err := time.Parse(layout, dueDateEnd)
+				if err != nil {
+					return err
+				}
+
+				collection.Filter.DueDateEnd = dueDateEndTime
+			}
+
+			collection.Filter.WithDone = withDone
+			collection.Filter.Author = author
+
+			todos := collection.GetList()
+
+			if len(todos) == 0 {
 				return errors.New("todo_empty")
 			}
 
-			appResponse = &response.ListResponse{Collection: col}
+			appResponse = &response.ListResponse{Collection: collection}
 			return nil
 		},
 	}
@@ -83,7 +111,9 @@ var (
 				todo.Content = args[0]
 			}
 
-			setTodoFlagAttr(c, todo)
+			if err = setTodoFlagAttr(c, todo); err != nil {
+				return err
+			}
 
 			return save()
 		},
@@ -120,6 +150,9 @@ var (
 func init() {
 	listCmd.PersistentFlags().String("status", "", "search status")
 	listCmd.PersistentFlags().Bool("with-done", false, "showing list with done status todo")
+	listCmd.PersistentFlags().String("author", "", "search author name or email")
+	listCmd.PersistentFlags().String("due-date-start", "", "search due-date start time")
+	listCmd.PersistentFlags().String("due-date-end", "", "search due-date start end")
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(listCmd)
@@ -138,17 +171,19 @@ func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
 	status, err := c.Flags().GetString("status")
 	if err != nil {
 		return err
-	} else if err = t.IsValidStatus(status); err != nil {
-		return err
-	} else {
-		todo.Status = status
+	} else if status != "" {
+		if err = t.IsValidStatus(status); err != nil {
+			return err
+		} else {
+			todo.Status = status
+		}
 	}
 
 	dueDate, err := c.Flags().GetString("due-date")
 	if err != nil {
 		return err
 	} else if dueDate != "" {
-		layout := "2006-01-02T15:04:05.000Z"
+		layout := "2006-01-02"
 		todoTime, err := time.Parse(layout, dueDate)
 		if err != nil {
 			return err
