@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"sort"
 	"time"
 
 	"github.com/jaehong-hwang/todo/errors"
@@ -62,6 +63,22 @@ var listCmd = &cobra.Command{
 
 		col := filter.Run(collection)
 
+		orderBy, err := c.Flags().GetString("order-by")
+		if err != nil {
+			return err
+		} else {
+			sort.Slice(col.Todos, func(i, j int) bool {
+				switch orderBy {
+				case "level":
+					return col.Todos[i].Level > col.Todos[j].Level
+				case "due-date":
+					return (col.Todos[i].DueDate.Unix() > 0 && col.Todos[j].DueDate.Unix() < 0) || col.Todos[i].DueDate.Unix() < col.Todos[j].DueDate.Unix()
+				default:
+					return col.Todos[i].RegistDate.Unix() < col.Todos[j].RegistDate.Unix()
+				}
+			})
+		}
+
 		if len(col.Todos) == 0 {
 			return errors.New("todo_empty")
 		}
@@ -77,6 +94,7 @@ func init() {
 	listCmd.PersistentFlags().String("author", "", "search author name or email")
 	listCmd.PersistentFlags().String("due-date-start", "", "search due-date start time")
 	listCmd.PersistentFlags().String("due-date-end", "", "search due-date start end")
+	listCmd.PersistentFlags().String("order-by", "", "order by some field")
 
 	rootCmd.AddCommand(listCmd)
 }
