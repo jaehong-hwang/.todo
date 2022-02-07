@@ -44,7 +44,7 @@ var listCmd = &cobra.Command{
 
 			filter.DueDateStart = dueDateStartTime
 		}
-		z
+
 		dueDateEnd, err := c.Flags().GetString("due-date-end")
 		if err != nil {
 			return err
