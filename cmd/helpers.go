@@ -1,4 +1,4 @@
-package cli
+package cmd
 
 func save() error {
 	content, err := collection.GetTodosJSONString()

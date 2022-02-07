@@ -1,6 +1,7 @@
 package response
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 )
@@ -11,7 +12,12 @@ type ErrorResponse struct {
 }
 
 // Print error with ERROR tag
-func (r *ErrorResponse) Print() {
-	fmt.Fprintln(os.Stderr, r.Err)
+func (r *ErrorResponse) Print(isJson bool) {
+	if isJson {
+		str, _ := json.Marshal(r)
+		fmt.Fprintln(os.Stderr, string(str))
+	} else {
+		fmt.Fprintln(os.Stderr, r.Err)
+	}
 	os.Exit(1)
 }

@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/jaehong-hwang/todo/errors"
 )
 
 const (
@@ -12,6 +14,20 @@ const (
 	StatusDone    = "done"
 )
 
+var (
+	TodoLevels = []int{0, 1, 2, 3}
+)
+
+func IsValidStatus(status string) error {
+	if status != StatusWaiting && status != StatusWorking && status != StatusDone {
+		return errors.NewWithParam("unexpected_state", map[string]string{
+			"state": status,
+		})
+	}
+
+	return nil
+}
+
 // Todo unit struct
 type Todo struct {
 	ID          int       `json:"id"`
@@ -19,9 +35,10 @@ type Todo struct {
 	Author      string    `json:"author"`
 	AuthorEmail string    `json:"authorEmail"`
 	Content     string    `json:"content"`
-	Start       time.Time `json:"start"`
-	End         time.Time `json:"end"`
+	RegistDate  time.Time `json:"regist-date"`
+	DueDate     time.Time `json:"due-date"`
 	Labels      Labels    `json:"label"`
+	Level       int       `json:"level"`
 }
 
 func GetFields() []string {
@@ -41,33 +58,38 @@ func (t *Todo) ToStringSlice() []string {
 		t.Author,
 		t.AuthorEmail,
 		t.Content,
-		t.Start.Format("2006.01.02 15:04"),
-		t.End.Format("2006.01.02 15:04"),
+		t.RegistDate.Format("2006.01.02 15:04"),
+		t.DueDate.Format("2006.01.02"),
 		t.Labels.ToString(),
+		strconv.Itoa(t.Level),
 	}
 }
 
-func (t *Todo) AddLabel(l *Label) bool {
+func (t *Todo) AddLabel(l *Label) error {
 	for _, lb := range t.Labels {
 		if lb.Text == l.Text {
-			return false
+			return errors.NewWithParam("label_already_exists", map[string]string{
+				"label": l.Text,
+			})
 		}
 	}
 
 	t.Labels = append(t.Labels, l)
-	return true
+	return nil
 }
 
-func (t *Todo) RemoveLabel(labelText string) bool {
+func (t *Todo) RemoveLabel(labelText string) error {
 	for i, l := range t.Labels {
 		if l.Text == labelText {
 			for j := i; j < len(t.Labels)-1; j++ {
 				t.Labels[j] = t.Labels[j+1]
 			}
 			t.Labels = t.Labels[:len(t.Labels)-1]
-			return true
+			return nil
 		}
 	}
 
-	return false
+	return errors.NewWithParam("label_not_found", map[string]string{
+		"label": labelText,
+	})
 }
