@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"sort"
 	"time"
 
 	"github.com/jaehong-hwang/todo/errors"
+	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
 	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/spf13/cobra"
@@ -61,22 +61,27 @@ var listCmd = &cobra.Command{
 		filter.WithDone = withDone
 		filter.Author = author
 
-		col := filter.Run(collection)
-
 		orderBy, err := c.Flags().GetString("order-by")
 		if err != nil {
 			return err
-		} else {
-			sort.Slice(col.Todos, func(i, j int) bool {
-				switch orderBy {
-				case "level":
-					return col.Todos[i].Level > col.Todos[j].Level
-				case "due-date":
-					return (col.Todos[i].DueDate.Unix() > 0 && col.Todos[j].DueDate.Unix() < 0) || col.Todos[i].DueDate.Unix() < col.Todos[j].DueDate.Unix()
-				default:
-					return col.Todos[i].RegistDate.Unix() < col.Todos[j].RegistDate.Unix()
-				}
-			})
+		}
+
+		isAll, err := c.Flags().GetBool("all")
+		if err != nil {
+			return err
+		} else if isAll {
+			collection = &t.Collection{}
+			for _, dir := range system.Directories {
+				tf := file.FindTodoFileWithDirectory(dir)
+				c := t.NewTodoCollection(tf)
+				collection.Todos = append(collection.Todos, c.Todos...)
+			}
+		}
+
+		col := filter.Run(collection)
+		err = col.Sort(orderBy)
+		if err != nil {
+			return err
 		}
 
 		if len(col.Todos) == 0 {
@@ -94,7 +99,8 @@ func init() {
 	listCmd.PersistentFlags().String("author", "", "search author name or email")
 	listCmd.PersistentFlags().String("due-date-start", "", "search due-date start time")
 	listCmd.PersistentFlags().String("due-date-end", "", "search due-date start end")
-	listCmd.PersistentFlags().String("order-by", "", "order by some field")
+	listCmd.PersistentFlags().String("order-by", "regist-date", "order by some field")
+	listCmd.PersistentFlags().Bool("all", false, "showing list for all collections")
 
 	rootCmd.AddCommand(listCmd)
 }

@@ -9,4 +9,5 @@ var errors = map[string]string{
 	"todo_id_not_found":    "ID ${id} is not exists.",
 	"label_already_exists": "${label} is already exists label",
 	"label_not_found":      "${label} label not found",
+	"sort_method_invalid":  "${sort} is invalid order method, you can sort only `regist-date`, `due-date`, `level`. and default value `regist-date`",
 }
