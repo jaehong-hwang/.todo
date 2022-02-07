@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/jaehong-hwang/todo/errors"
+	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
 	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/spf13/cobra"
@@ -66,17 +67,21 @@ var listCmd = &cobra.Command{
 		}
 
 		isAll, err := c.Flags().GetBool("all")
-		var col *t.Collection
 		if err != nil {
 			return err
 		} else if isAll {
-
-		} else {
-			col = filter.Run(collection)
-			err = col.Sort(orderBy)
-			if err != nil {
-				return err
+			collection = &t.Collection{}
+			for _, dir := range system.Directories {
+				tf := file.FindTodoFileWithDirectory(dir)
+				c := t.NewTodoCollection(tf)
+				collection.Todos = append(collection.Todos, c.Todos...)
 			}
+		}
+
+		col := filter.Run(collection)
+		err = col.Sort(orderBy)
+		if err != nil {
+			return err
 		}
 
 		if len(col.Todos) == 0 {
