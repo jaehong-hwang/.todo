@@ -2,6 +2,7 @@ package todo
 
 import (
 	"encoding/json"
+	"sort"
 	"strconv"
 
 	"github.com/jaehong-hwang/todo/errors"
@@ -89,4 +90,26 @@ func (t *Collection) GetTodosJSONString() (string, error) {
 	}
 
 	return string(b), nil
+}
+
+// Sort collectio
+func (t *Collection) Sort(orderBy string) error {
+	if orderBy != "level" && orderBy != "due-date" && orderBy != "regist-date" {
+		return errors.NewWithParam("sort_method_invalid", map[string]string{
+			"sort": orderBy,
+		})
+	}
+
+	sort.Slice(t.Todos, func(i, j int) bool {
+		switch orderBy {
+		case "level":
+			return t.Todos[i].Level > t.Todos[j].Level
+		case "due-date":
+			return (t.Todos[i].DueDate.Unix() > 0 && t.Todos[j].DueDate.Unix() < 0) || t.Todos[i].DueDate.Unix() < t.Todos[j].DueDate.Unix()
+		default:
+			return t.Todos[i].RegistDate.Unix() < t.Todos[j].RegistDate.Unix()
+		}
+	})
+
+	return nil
 }
