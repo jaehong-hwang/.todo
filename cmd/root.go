@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	todoFile       = file.FindTodoFile()
+	todoFile       *file.File
+	collection     *todo.Collection
 	todoSystemFile = file.FindTodoSystemFile()
-	collection     = todo.NewTodoCollection(todoFile)
 	system         = todo.NewSystem(todoSystemFile)
 )
 
@@ -26,6 +26,20 @@ var rootCmd = &cobra.Command{
 	Long: `.todo was created with a motif from git.
 				It is a tool that creates a .todo file that manages to-dos by directory, shows list, and manages.
 				For detailed explanation, see https://jaehong-hwang.github.com/todo`,
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		dir, err := cmd.Flags().GetString("directory")
+		if err != nil {
+			return err
+		} else if dir != "" {
+			todoFile = file.FindTodoFileWithDirectory(dir)
+			collection = todo.NewTodoCollection(todoFile)
+		} else {
+			todoFile = file.FindTodoFile()
+			collection = todo.NewTodoCollection(todoFile)
+		}
+
+		return nil
+	},
 }
 
 func requireArgs(c *cobra.Command, args []string) error {
@@ -36,6 +50,7 @@ func requireArgs(c *cobra.Command, args []string) error {
 }
 
 func init() {
+	rootCmd.PersistentFlags().String("directory", "", "running directory")
 	rootCmd.PersistentFlags().Bool("get-json", false, "if you want response type json")
 	rootCmd.PersistentFlags().Int("id", 0, "todo item id")
 	rootCmd.PersistentFlags().String("status", "", "todo item status")
