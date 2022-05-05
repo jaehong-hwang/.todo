@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/jaehong-hwang/todo/errors"
+	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
 	"github.com/spf13/cobra"
 )
@@ -19,16 +20,18 @@ var (
 		Use:   "init",
 		Short: "set up todo for current directory",
 		RunE: func(c *cobra.Command, args []string) error {
-			if todoFile.IsExist() {
-				return errors.New("todo_already_exists")
-			}
-
 			dir, err := os.Getwd()
 			if err != nil {
 				return err
 			}
 
-			err = todoFile.CreateIfNotExist()
+			newTodoFile := file.FindTodoFileWithDirectory(dir)
+
+			if newTodoFile.IsExist() {
+				return errors.New("todo_already_exists")
+			}
+
+			err = newTodoFile.CreateIfNotExist()
 			if err != nil {
 				return err
 			}
