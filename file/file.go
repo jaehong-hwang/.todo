@@ -29,6 +29,11 @@ func (f *File) CreateIfNotExist() error {
 	}
 }
 
+// GetDirectory from todo file
+func (f *File) GetDirectory() string {
+	return f.directory
+}
+
 // GetContent from todo file
 func (f *File) GetContent() (string, error) {
 	if f.IsExist() == false {
