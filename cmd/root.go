@@ -31,10 +31,10 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		} else if dir != "" {
-			todoFile = file.FindTodoFileWithDirectory(dir)
+			todoFile = file.FindTodoFileWithDirectory(dir, false)
 			collection = todo.NewTodoCollection(todoFile)
 		} else {
-			todoFile = file.FindTodoFile()
+			todoFile = file.FindTodoFile(true)
 			collection = todo.NewTodoCollection(todoFile)
 		}
 

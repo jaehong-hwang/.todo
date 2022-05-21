@@ -25,7 +25,7 @@ var (
 				return err
 			}
 
-			newTodoFile := file.FindTodoFileWithDirectory(dir)
+			newTodoFile := file.FindTodoFileWithDirectory(dir, false)
 
 			if newTodoFile.IsExist() {
 				return errors.New("todo_already_exists")

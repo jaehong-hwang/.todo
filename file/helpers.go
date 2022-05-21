@@ -18,8 +18,8 @@ const (
 )
 
 // FindTodoFile from current directory
-func FindTodoFile() *File {
-	file := FindFromCurrentDirectory(todoFileName, false)
+func FindTodoFile(increase bool) *File {
+	file := FindFromCurrentDirectory(todoFileName, increase)
 	if file != nil {
 		file.Permission = todoFilePermission
 	}
@@ -28,8 +28,8 @@ func FindTodoFile() *File {
 }
 
 // FindTodoFile from current directory
-func FindTodoFileWithDirectory(dir string) *File {
-	file := FindFromDirectory(todoFileName, dir, false)
+func FindTodoFileWithDirectory(dir string, increase bool) *File {
+	file := FindFromDirectory(todoFileName, dir, increase)
 	if file != nil {
 		file.Permission = todoFilePermission
 	}
