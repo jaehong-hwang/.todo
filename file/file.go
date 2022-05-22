@@ -22,11 +22,7 @@ func (f *File) IsExist() bool {
 
 // CreateIfNotExist will make file if is not exists
 func (f *File) CreateIfNotExist() error {
-	if f.IsExist() == true {
-		return nil
-	} else {
-		return CreateFile(f.Name, f.directory)
-	}
+	return CreateIfNotExists(f.Name, f.directory)
 }
 
 // GetDirectory from todo file
