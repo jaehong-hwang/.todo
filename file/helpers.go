@@ -7,21 +7,21 @@ import (
 )
 
 const (
-	// TodoFileName is name of todo collection file
-	todoFileName string = ".todo"
+	// TODO_DIRECTORY_NAME is name of todo collection directory
+	TODO_DIRECTORY_NAME string = ".todo"
 
-	// TodoFileName is name of todo collection file
-	todoSystemFileName string = ".todo.system"
+	// TODO_SYSTEM_FILE_NAME is name of configuration file
+	TODO_SYSTEM_FILE_NAME string = ".todo.system"
 
-	// TodoFilePermission set read permission
-	todoFilePermission os.FileMode = 0644
+	// TODO_FILE_PERMISSION set read permission
+	TODO_FILE_PERMISSION os.FileMode = 0644
 )
 
 // FindTodoFile from current directory
 func FindTodoFile(increase bool) *File {
-	file := FindFromCurrentDirectory(todoFileName, increase)
+	file := FindFromCurrentDirectory(TODO_DIRECTORY_NAME, increase)
 	if file != nil {
-		file.Permission = todoFilePermission
+		file.Permission = TODO_FILE_PERMISSION
 	}
 
 	return file
@@ -29,9 +29,9 @@ func FindTodoFile(increase bool) *File {
 
 // FindTodoFile from current directory
 func FindTodoFileWithDirectory(dir string, increase bool) *File {
-	file := FindFromDirectory(todoFileName, dir, increase)
+	file := FindFromDirectory(TODO_DIRECTORY_NAME, dir, increase)
 	if file != nil {
-		file.Permission = todoFilePermission
+		file.Permission = TODO_FILE_PERMISSION
 	}
 
 	return file
@@ -44,9 +44,9 @@ func FindTodoSystemFile() *File {
 		panic("Failed to get current user")
 	}
 
-	file := FindFromDirectory(todoSystemFileName, usr.HomeDir, false)
+	file := FindFromDirectory(TODO_SYSTEM_FILE_NAME, usr.HomeDir, false)
 	if file != nil {
-		file.Permission = todoFilePermission
+		file.Permission = TODO_FILE_PERMISSION
 	}
 
 	return file
