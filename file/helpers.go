@@ -17,51 +17,44 @@ const (
 	TODO_FILE_PERMISSION os.FileMode = 0644
 )
 
-type Fileinfo struct {
-	Name string
-	Permission os.FileMode
-	path string
-	directory string
+func GetCurrentDirectory() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		panic("Failed to get current path, please check permissions")
+	}
+
+	return dir
 }
 
-// FindTodoWorkspace from current directory
-func FindTodoWorkspace(increase bool) *File {
-	file := FindFromCurrentDirectory(TODO_DIRECTORY_NAME, increase)
-	if file != nil {
-		file.Permission = TODO_FILE_PERMISSION
-	}
-
-	return &File{
-		file,
-	}
-}
-
-// FindTodoWorkspaceWithDirectory from current directory
-func FindTodoWorkspaceWithDirectory(dir string, increase bool) *File {
-	file := FindFromDirectory(TODO_DIRECTORY_NAME, dir, increase)
-	if file != nil {
-		file.Permission = TODO_FILE_PERMISSION
-	}
-
-	return &File{
-		file,
-	}
-}
-
-// FindTodoSystemFile from home directory
-func FindTodoSystemFile() *File {
+func GetHomeDirectory() string {
 	usr, err := user.Current()
 	if err != nil {
 		panic("Failed to get current user")
 	}
 
-	file := FindFromDirectory(TODO_SYSTEM_FILE_NAME, usr.HomeDir, false)
-	if file != nil {
-		file.Permission = TODO_FILE_PERMISSION
+	return usr.HomeDir
+}
+
+// FindTodoWorkspace from current directory
+func FindTodoWorkspace(dir string, increase bool) *TodoWorkspace {
+	fileinfo := FindFromDirectory(TODO_DIRECTORY_NAME, dir, increase)
+	if fileinfo != nil {
+		fileinfo.Permission = TODO_FILE_PERMISSION
+	}
+
+	return NewTodoWorkspace(fileinfo)
+}
+
+// FindTodoSystemFile from home directory
+func FindTodoSystemFile() *File {
+	dir := GetHomeDirectory()
+	fileinfo := FindFromDirectory(TODO_SYSTEM_FILE_NAME, dir, false)
+	if fileinfo != nil {
+		fileinfo.Permission = TODO_FILE_PERMISSION
 	}
 
 	return &File{
-		file,
+		fileinfo,
 	}
 }
 
@@ -71,13 +64,13 @@ func FindFromDirectory(name string, dir string, increase bool) *Fileinfo {
 	for {
 		path := dir + "/" + name
 		if exist, _ := IsExist(path); exist {
-			file := &Fileinfo{
+			fileinfo := &Fileinfo{
 				Name: name,
 				path: path,
 				directory: dir,
 			}
 
-			return file
+			return fileinfo
 		}
 
 		if dir == "/" || increase == false {
@@ -90,16 +83,6 @@ func FindFromDirectory(name string, dir string, increase bool) *Fileinfo {
 
 		dir = filepath.Dir(dir)
 	}
-}
-
-// FindFromCurrentDirectory by filename
-func FindFromCurrentDirectory(name string, increase bool) *Fileinfo {
-	dir, err := os.Getwd()
-	if err != nil {
-		panic("Failed to get current path, please check permissions")
-	}
-
-	return FindFromDirectory(name, dir, increase)
 }
 
 // IsExist check from path param

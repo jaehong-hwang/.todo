@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	todoFile       *file.File
+	todoFile       *file.TodoWorkspace
 	collection     *todo.Collection
 	todoSystemFile = file.FindTodoSystemFile()
 	system         = todo.NewSystem(todoSystemFile)
@@ -31,10 +31,11 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		} else if dir != "" {
-			todoFile = file.FindTodoWorkspaceWithDirectory(dir, false)
+			todoFile = file.FindTodoWorkspace(dir, false)
 			collection = todo.NewTodoCollection(todoFile)
 		} else {
-			todoFile = file.FindTodoWorkspace(true)
+			dir = file.GetCurrentDirectory()
+			todoFile = file.FindTodoWorkspace(dir, true)
 			collection = todo.NewTodoCollection(todoFile)
 		}
 
