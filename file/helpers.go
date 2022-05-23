@@ -108,9 +108,12 @@ func CreateFile(name string, dir string) error {
 }
 
 func CreateIfNotExists(name string, dir string) error {
-	if exists, err := IsExist(name + "/" + dir); exists || err != nil {
+	exists, err := IsExist(dir + "/" + name)
+	if exists == false {
+		return CreateFile(name, dir)
+	} else if err != nil {
 		return err
 	}
 
-	return CreateFile(name, dir)
+	return nil
 }
