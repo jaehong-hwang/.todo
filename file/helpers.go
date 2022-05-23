@@ -17,24 +17,35 @@ const (
 	TODO_FILE_PERMISSION os.FileMode = 0644
 )
 
-// FindTodoFile from current directory
-func FindTodoFile(increase bool) *File {
+type Fileinfo struct {
+	Name string
+	Permission os.FileMode
+	path string
+	directory string
+}
+
+// FindTodoWorkspace from current directory
+func FindTodoWorkspace(increase bool) *File {
 	file := FindFromCurrentDirectory(TODO_DIRECTORY_NAME, increase)
 	if file != nil {
 		file.Permission = TODO_FILE_PERMISSION
 	}
 
-	return file
+	return &File{
+		file,
+	}
 }
 
-// FindTodoFile from current directory
-func FindTodoFileWithDirectory(dir string, increase bool) *File {
+// FindTodoWorkspaceWithDirectory from current directory
+func FindTodoWorkspaceWithDirectory(dir string, increase bool) *File {
 	file := FindFromDirectory(TODO_DIRECTORY_NAME, dir, increase)
 	if file != nil {
 		file.Permission = TODO_FILE_PERMISSION
 	}
 
-	return file
+	return &File{
+		file,
+	}
 }
 
 // FindTodoSystemFile from home directory
@@ -49,18 +60,20 @@ func FindTodoSystemFile() *File {
 		file.Permission = TODO_FILE_PERMISSION
 	}
 
-	return file
+	return &File{
+		file,
+	}
 }
 
 // FindFromDirectory by filename
-func FindFromDirectory(name string, dir string, increase bool) *File {
+func FindFromDirectory(name string, dir string, increase bool) *Fileinfo {
 	fromDir := dir
 	for {
 		path := dir + "/" + name
 		if exist, _ := IsExist(path); exist {
-			file := &File{
-				Name:      name,
-				path:      path,
+			file := &Fileinfo{
+				Name: name,
+				path: path,
 				directory: dir,
 			}
 
@@ -68,9 +81,9 @@ func FindFromDirectory(name string, dir string, increase bool) *File {
 		}
 
 		if dir == "/" || increase == false {
-			return &File{
+			return &Fileinfo{
 				Name:      name,
-				path:      fromDir + "/" + name,
+				path: fromDir + "/" + name,
 				directory: fromDir,
 			}
 		}
@@ -80,7 +93,7 @@ func FindFromDirectory(name string, dir string, increase bool) *File {
 }
 
 // FindFromCurrentDirectory by filename
-func FindFromCurrentDirectory(name string, increase bool) *File {
+func FindFromCurrentDirectory(name string, increase bool) *Fileinfo {
 	dir, err := os.Getwd()
 	if err != nil {
 		panic("Failed to get current path, please check permissions")
@@ -116,4 +129,9 @@ func CreateIfNotExists(name string, dir string) error {
 	}
 
 	return nil
+}
+
+// CreateDirectory by path
+func CreateDirectory(path string) error {
+	return os.Mkdir(path, TODO_FILE_PERMISSION)
 }

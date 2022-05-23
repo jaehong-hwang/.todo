@@ -8,10 +8,7 @@ import (
 
 // File management struct
 type File struct {
-	Name       string
-	Permission os.FileMode
-	path       string
-	directory  string
+	*Fileinfo
 }
 
 // IsExist todo file in current directory
