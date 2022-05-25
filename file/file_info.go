@@ -29,3 +29,8 @@ func (f *Fileinfo) GetDirectory() string {
 func (f *Fileinfo) Remove() error {
 	return os.Remove(f.path)
 }
+
+// Find from current directory
+func (f *Fileinfo) Find(name string) *Fileinfo {
+	return FindFromDirectory(name, f.path, false)
+}

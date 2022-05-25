@@ -14,7 +14,7 @@ const (
 	TODO_SYSTEM_FILE_NAME string = ".todo.system"
 
 	// TODO_FILE_PERMISSION set read permission
-	TODO_FILE_PERMISSION os.FileMode = 0644
+	TODO_FILE_PERMISSION os.FileMode = 0755
 )
 
 func GetCurrentDirectory() string {
@@ -42,7 +42,12 @@ func FindTodoWorkspace(dir string, increase bool) *TodoWorkspace {
 		fileinfo.Permission = TODO_FILE_PERMISSION
 	}
 
-	return NewTodoWorkspace(fileinfo)
+	workspace, err := NewTodoWorkspace(fileinfo)
+	if err != nil {
+		panic(err)
+	}
+
+	return workspace
 }
 
 // FindTodoSystemFile from home directory
