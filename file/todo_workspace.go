@@ -9,7 +9,7 @@ const (
 	// TODO_FILE_NAME is name of todo main list file
 	TODO_FILE_NAME string = "todo.json"
 
-	HISTORY_DIRECTORY string = "histories"
+	LOGS_DIRECTORY string = "logs"
 )
 
 func NewTodoWorkspace(fileinfo *Fileinfo) (*TodoWorkspace, error) {
