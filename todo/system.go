@@ -40,17 +40,14 @@ func NewSystem(systemFile *file.File) *System {
 	return &system
 }
 
-func (s *System) AddDirectory(path string) error {
+func (s *System) AddDirectory(newDir Directory) error {
 	for _, dir := range s.Directories {
-		if dir.Path == path {
+		if dir.Path == newDir.Path {
 			return nil
 		}
 	}
 
-	s.Directories = append(s.Directories, Directory{
-		Name: "",
-		Path: path,
-	})
+	s.Directories = append(s.Directories, newDir)
 	return s.Save()
 }
 
