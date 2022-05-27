@@ -72,7 +72,7 @@ var listCmd = &cobra.Command{
 		} else if isAll {
 			collection = &t.Collection{}
 			for _, dir := range system.Directories {
-				tf := file.FindTodoFileWithDirectory(dir, true)
+				tf := file.FindTodoFileWithDirectory(dir.Path, true)
 				c := t.NewTodoCollection(tf)
 				collection.Todos = append(collection.Todos, c.Todos...)
 			}
