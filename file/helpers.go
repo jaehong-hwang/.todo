@@ -7,86 +7,87 @@ import (
 )
 
 const (
-	// TodoFileName is name of todo collection file
-	todoFileName string = ".todo"
+	// TODO_DIRECTORY_NAME is name of todo collection directory
+	TODO_DIRECTORY_NAME string = ".todo"
 
-	// TodoFileName is name of todo collection file
-	todoSystemFileName string = ".todo.system"
+	// TODO_SYSTEM_FILE_NAME is name of configuration file
+	TODO_SYSTEM_FILE_NAME string = ".todo.system"
 
-	// TodoFilePermission set read permission
-	todoFilePermission os.FileMode = 0644
+	// TODO_FILE_PERMISSION set read permission
+	TODO_FILE_PERMISSION os.FileMode = 0755
 )
 
-// FindTodoFile from current directory
-func FindTodoFile(increase bool) *File {
-	file := FindFromCurrentDirectory(todoFileName, increase)
-	if file != nil {
-		file.Permission = todoFilePermission
+func GetCurrentDirectory() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		panic("Failed to get current path, please check permissions")
 	}
 
-	return file
+	return dir
 }
 
-// FindTodoFile from current directory
-func FindTodoFileWithDirectory(dir string, increase bool) *File {
-	file := FindFromDirectory(todoFileName, dir, increase)
-	if file != nil {
-		file.Permission = todoFilePermission
-	}
-
-	return file
-}
-
-// FindTodoSystemFile from home directory
-func FindTodoSystemFile() *File {
+func GetHomeDirectory() string {
 	usr, err := user.Current()
 	if err != nil {
 		panic("Failed to get current user")
 	}
 
-	file := FindFromDirectory(todoSystemFileName, usr.HomeDir, false)
-	if file != nil {
-		file.Permission = todoFilePermission
+	return usr.HomeDir
+}
+
+// FindTodoWorkspace from current directory
+func FindTodoWorkspace(dir string, increase bool) *TodoWorkspace {
+	fileinfo := FindFromDirectory(TODO_DIRECTORY_NAME, dir, increase)
+	if fileinfo != nil {
+		fileinfo.Permission = TODO_FILE_PERMISSION
 	}
 
-	return file
+	workspace, err := NewTodoWorkspace(fileinfo)
+	if err != nil {
+		panic(err)
+	}
+
+	return workspace
+}
+
+// FindTodoSystemFile from home directory
+func FindTodoSystemFile() *File {
+	dir := GetHomeDirectory()
+	fileinfo := FindFromDirectory(TODO_SYSTEM_FILE_NAME, dir, false)
+	if fileinfo != nil {
+		fileinfo.Permission = TODO_FILE_PERMISSION
+	}
+
+	return &File{
+		fileinfo,
+	}
 }
 
 // FindFromDirectory by filename
-func FindFromDirectory(name string, dir string, increase bool) *File {
+func FindFromDirectory(name string, dir string, increase bool) *Fileinfo {
 	fromDir := dir
 	for {
 		path := dir + "/" + name
 		if exist, _ := IsExist(path); exist {
-			file := &File{
-				Name:      name,
-				path:      path,
+			fileinfo := &Fileinfo{
+				Name: name,
+				path: path,
 				directory: dir,
 			}
 
-			return file
+			return fileinfo
 		}
 
 		if dir == "/" || increase == false {
-			return &File{
+			return &Fileinfo{
 				Name:      name,
-				path:      fromDir + "/" + name,
+				path: fromDir + "/" + name,
 				directory: fromDir,
 			}
 		}
 
 		dir = filepath.Dir(dir)
 	}
-}
-
-// FindFromCurrentDirectory by filename
-func FindFromCurrentDirectory(name string, increase bool) *File {
-	dir, err := os.Getwd()
-	if err != nil {
-		panic("Failed to get current path, please check permissions")
-	}
-
-	return FindFromDirectory(name, dir, increase)
 }
 
 // IsExist check from path param
@@ -105,4 +106,20 @@ func CreateFile(name string, dir string) error {
 	defer file.Close()
 
 	return nil
+}
+
+func CreateIfNotExists(name string, dir string) error {
+	exists, err := IsExist(dir + "/" + name)
+	if exists == false {
+		return CreateFile(name, dir)
+	} else if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreateDirectory by path
+func CreateDirectory(path string) error {
+	return os.Mkdir(path, TODO_FILE_PERMISSION)
 }

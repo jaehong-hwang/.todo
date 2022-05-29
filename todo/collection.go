@@ -18,7 +18,7 @@ type Collection struct {
 }
 
 // NewTodoCollection returned
-func NewTodoCollection(todoFile *file.File) *Collection {
+func NewTodoCollection(todoFile *file.TodoWorkspace) *Collection {
 	todos := Todos{}
 
 	if todoFile != nil {
