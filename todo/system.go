@@ -51,6 +51,18 @@ func (s *System) AddDirectory(newDir Directory) error {
 	return s.Save()
 }
 
+func (s *System) RemoveDirectory(removePath string) error {
+	for i, dir := range s.Directories {
+		if dir.Path == removePath {
+			s.Directories[i] = s.Directories[len(s.Directories) - 1]
+			s.Directories = s.Directories[:len(s.Directories)-1]
+			break
+		}
+	}
+
+	return s.Save()
+}
+
 func (s *System) Save() error {
 	jsonData, err := json.Marshal(s)
 	if err != nil {

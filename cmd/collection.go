@@ -71,6 +71,8 @@ var (
 				return nil
 			}
 
+			system.RemoveDirectory(todoFile.GetDirectory())
+
 			return todoFile.Remove()
 		},
 	}
