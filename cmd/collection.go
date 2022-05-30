@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/jaehong-hwang/todo/errors"
 	"github.com/jaehong-hwang/todo/file"
@@ -21,18 +20,14 @@ var (
 		Use:   "init",
 		Short: "set up todo for current directory",
 		RunE: func(c *cobra.Command, args []string) error {
-			dir, err := os.Getwd()
-			if err != nil {
-				return err
-			}
-
-			newTodoFile := file.FindTodoFileWithDirectory(dir, false)
+			dir := file.GetCurrentDirectory()
+			newTodoFile := file.FindTodoWorkspace(dir, false)
 
 			if newTodoFile.IsExist() {
 				return errors.New("todo_already_exists")
 			}
 
-			err = newTodoFile.CreateIfNotExist()
+			err := newTodoFile.CreateIfNotExist()
 			if err != nil {
 				return err
 			}
