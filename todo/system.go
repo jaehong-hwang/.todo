@@ -6,7 +6,12 @@ import (
 	"github.com/jaehong-hwang/todo/file"
 )
 
-type Directories []string
+type Directory struct {
+	Name string `json:"name"`
+	Path string `json:"path"`
+}
+
+type Directories []Directory
 type System struct {
 	file        *file.File
 	Directories Directories `json:"directories"`
@@ -35,14 +40,26 @@ func NewSystem(systemFile *file.File) *System {
 	return &system
 }
 
-func (s *System) AddDirectory(directory string) error {
+func (s *System) AddDirectory(newDir Directory) error {
 	for _, dir := range s.Directories {
-		if dir == directory {
+		if dir.Path == newDir.Path {
 			return nil
 		}
 	}
 
-	s.Directories = append(s.Directories, directory)
+	s.Directories = append(s.Directories, newDir)
+	return s.Save()
+}
+
+func (s *System) RemoveDirectory(removePath string) error {
+	for i, dir := range s.Directories {
+		if dir.Path == removePath {
+			s.Directories[i] = s.Directories[len(s.Directories) - 1]
+			s.Directories = s.Directories[:len(s.Directories)-1]
+			break
+		}
+	}
+
 	return s.Save()
 }
 

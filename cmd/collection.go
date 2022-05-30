@@ -6,6 +6,7 @@ import (
 	"github.com/jaehong-hwang/todo/errors"
 	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
+	"github.com/jaehong-hwang/todo/todo"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +32,15 @@ var (
 				return err
 			}
 
-			system.AddDirectory(dir)
+			name, err := c.Flags().GetString("name")
+			if err != nil {
+				return err
+			}
+
+			system.AddDirectory(todo.Directory{
+				Name: name,
+				Path: dir,
+			})
 
 			appResponse = &response.MessageResponse{Message: "todo init complete"}
 			return nil
@@ -57,6 +66,8 @@ var (
 				return nil
 			}
 
+			system.RemoveDirectory(todoFile.GetDirectory())
+
 			return todoFile.Remove()
 		},
 	}
@@ -68,4 +79,6 @@ func init() {
 	collectionCmd.AddCommand(collectionInitCmd)
 	collectionCmd.AddCommand(collectionListCmd)
 	collectionCmd.AddCommand(collectionRemoveCmd)
+
+	collectionInitCmd.PersistentFlags().String("name", "", "alias directory name")
 }

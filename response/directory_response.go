@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/jaehong-hwang/todo/todo"
+	"github.com/ryanuber/columnize"
 )
 
 // ListResponse is todo list response to string
@@ -23,12 +24,14 @@ func (r *DirectoryResponse) Print(isJson bool) {
 
 		fmt.Println(string(b))
 	} else {
-		output := ""
+		var output []string
+
+		output = append(output, "name | path")
 
 		for _, directory := range r.Directories {
-			output = output + directory + "\n"
+			output = append(output, directory.Name + " | " + directory.Path)
 		}
 
-		fmt.Println(output)
+		fmt.Println(columnize.SimpleFormat(output))
 	}
 }
