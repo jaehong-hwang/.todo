@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/jaehong-hwang/todo/todo"
 	"github.com/spf13/cobra"
 )
 
@@ -13,19 +14,19 @@ var (
 	waitCmd = &cobra.Command{
 		Use:   "wait",
 		Short: "todo set waiting state",
-		RunE:  getUpdatingStateAction("wait"),
+		RunE:  getUpdatingStateAction(todo.STATUS_WAITING),
 	}
 
 	workCmd = &cobra.Command{
 		Use:   "work",
 		Short: "todo set working state",
-		RunE:  getUpdatingStateAction("work"),
+		RunE:  getUpdatingStateAction(todo.STATUS_WORKING),
 	}
 
 	doneCmd = &cobra.Command{
 		Use:   "done",
 		Short: "todo set done state",
-		RunE:  getUpdatingStateAction("done"),
+		RunE:  getUpdatingStateAction(todo.STATUS_DONE),
 	}
 )
 

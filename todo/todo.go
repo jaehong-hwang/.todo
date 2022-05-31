@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	StatusWaiting = "waiting"
-	StatusWorking = "working"
-	StatusDone    = "done"
+	STATUS_WAITING = "waiting"
+	STATUS_WORKING = "working"
+	STATUS_DONE    = "done"
 )
 
 var (
@@ -19,7 +19,7 @@ var (
 )
 
 func IsValidStatus(status string) error {
-	if status != StatusWaiting && status != StatusWorking && status != StatusDone {
+	if status != STATUS_WAITING && status != STATUS_WORKING && status != STATUS_DONE {
 		return errors.NewWithParam("unexpected_state", map[string]string{
 			"state": status,
 		})

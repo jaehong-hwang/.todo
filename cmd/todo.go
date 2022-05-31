@@ -17,7 +17,7 @@ var (
 		RunE: func(c *cobra.Command, args []string) error {
 			todo := collection.NewTodo()
 			todo.Content = args[0]
-			todo.Status = t.StatusWaiting
+			todo.Status = t.STATUS_WAITING
 			todo.Author = system.Author.Name
 			todo.AuthorEmail = system.Author.Email
 			todo.RegistDate = time.Now()

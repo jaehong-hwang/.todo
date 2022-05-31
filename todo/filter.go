@@ -21,7 +21,7 @@ func (f *Filters) Run(c *Collection) *Collection {
 		isValidate := true
 
 		if f.WithDone == false {
-			isValidate = todo.Status == StatusWaiting || todo.Status == StatusWorking
+			isValidate = todo.Status == STATUS_WAITING || todo.Status == STATUS_WORKING
 		}
 
 		if len(f.Status) > 0 {
