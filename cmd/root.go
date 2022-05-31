@@ -41,6 +41,8 @@ var rootCmd = &cobra.Command{
 
 		return nil
 	},
+	SilenceErrors: true,
+	SilenceUsage: true,
 }
 
 func requireArgs(c *cobra.Command, args []string) error {
