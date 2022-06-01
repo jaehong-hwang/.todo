@@ -34,7 +34,7 @@ var (
 		Use:   "update",
 		Short: "update todo message",
 		RunE: func(c *cobra.Command, args []string) error {
-			id, err := c.Flags().GetInt("id")
+			id, err := c.Flags().GetString("id")
 			if err != nil {
 				return err
 			}
@@ -60,7 +60,7 @@ var (
 		Use:   "remove",
 		Short: "remove todo message",
 		RunE: func(c *cobra.Command, args []string) error {
-			id, err := c.Flags().GetInt("id")
+			id, err := c.Flags().GetString("id")
 			if err != nil {
 				return err
 			}

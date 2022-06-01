@@ -16,7 +16,7 @@ var (
 		Short: "add label to todo",
 		Args:  requireArgs,
 		RunE: func(c *cobra.Command, args []string) error {
-			id, err := c.Flags().GetInt("id")
+			id, err := c.Flags().GetString("id")
 			if err != nil {
 				return err
 			}
@@ -45,7 +45,7 @@ var (
 		Short: "remove label from todo",
 		Args:  requireArgs,
 		RunE: func(c *cobra.Command, args []string) error {
-			id, err := c.Flags().GetInt("id")
+			id, err := c.Flags().GetString("id")
 			if err != nil {
 				return err
 			}

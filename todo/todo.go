@@ -30,7 +30,7 @@ func IsValidStatus(status string) error {
 
 // Todo unit struct
 type Todo struct {
-	ID          int       `json:"id"`
+	ID          string    `json:"id"`
 	Status      string    `json:"status"`
 	Author      string    `json:"author"`
 	AuthorEmail string    `json:"authorEmail"`
@@ -53,7 +53,7 @@ func GetFields() []string {
 
 func (t *Todo) ToStringSlice() []string {
 	return []string{
-		strconv.Itoa(t.ID),
+		t.ID,
 		t.Status,
 		t.Author,
 		t.AuthorEmail,
