@@ -55,7 +55,7 @@ func requireArgs(c *cobra.Command, args []string) error {
 func init() {
 	rootCmd.PersistentFlags().String("directory", "", "running directory")
 	rootCmd.PersistentFlags().Bool("get-json", false, "if you want response type json")
-	rootCmd.PersistentFlags().Int("id", 0, "todo item id")
+	rootCmd.PersistentFlags().String("id", "", "todo item id")
 	rootCmd.PersistentFlags().String("status", "", "todo item status")
 	rootCmd.PersistentFlags().Int("level", 0, "todo item level")
 	rootCmd.PersistentFlags().String("due-date", "", "todo item's due-date")

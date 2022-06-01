@@ -7,6 +7,7 @@ import (
 	"github.com/jaehong-hwang/todo/file"
 	"github.com/jaehong-hwang/todo/response"
 	"github.com/jaehong-hwang/todo/todo"
+	"github.com/rs/xid"
 	"github.com/spf13/cobra"
 )
 
@@ -38,6 +39,7 @@ var (
 			}
 
 			system.AddDirectory(todo.Directory{
+				ID: xid.New().String(),
 				Name: name,
 				Path: dir,
 			})

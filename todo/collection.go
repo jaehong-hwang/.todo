@@ -3,10 +3,10 @@ package todo
 import (
 	"encoding/json"
 	"sort"
-	"strconv"
 
 	"github.com/jaehong-hwang/todo/errors"
 	"github.com/jaehong-hwang/todo/file"
+	"github.com/rs/xid"
 )
 
 // Todos is todo array
@@ -35,13 +35,8 @@ func NewTodoCollection(todoFile *file.TodoWorkspace) *Collection {
 
 // NewTodo from todo list
 func (t *Collection) NewTodo() Todo {
-	id := 0
-	if len(t.Todos) > 0 {
-		id = t.Todos[len(t.Todos)-1].ID + 1
-	}
-
 	todo := Todo{
-		ID:     id,
+		ID:     xid.New().String(),
 		Status: STATUS_WAITING,
 		Level:  TodoLevels[0],
 	}
@@ -55,7 +50,7 @@ func (t *Collection) Add(todo Todo) {
 }
 
 // Remove todo item by id
-func (t *Collection) Remove(id int) bool {
+func (t *Collection) Remove(id string) bool {
 	for i, todo := range t.Todos {
 		if todo.ID == id {
 			for j := i; j < len(t.Todos)-1; j++ {
@@ -70,7 +65,7 @@ func (t *Collection) Remove(id int) bool {
 }
 
 // GetTodo by id
-func (t *Collection) GetTodo(id int) (*Todo, error) {
+func (t *Collection) GetTodo(id string) (*Todo, error) {
 	for i, todo := range t.Todos {
 		if todo.ID == id {
 			return &t.Todos[i], nil
@@ -78,7 +73,7 @@ func (t *Collection) GetTodo(id int) (*Todo, error) {
 	}
 
 	return nil, errors.NewWithParam("todo_id_not_found", map[string]string{
-		"id": strconv.Itoa(id),
+		"id": id,
 	})
 }
 

@@ -39,7 +39,7 @@ func init() {
 
 func getUpdatingStateAction(state string) func(c *cobra.Command, args []string) error {
 	return func(c *cobra.Command, args []string) error {
-		id, err := c.Flags().GetInt("id")
+		id, err := c.Flags().GetString("id")
 		if err != nil {
 			return err
 		}
@@ -48,7 +48,7 @@ func getUpdatingStateAction(state string) func(c *cobra.Command, args []string) 
 	}
 }
 
-func updateState(id int, status string) error {
+func updateState(id string, status string) error {
 	todo, err := collection.GetTodo(id)
 	if err != nil {
 		return err
