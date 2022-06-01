@@ -3,10 +3,10 @@ package file
 import "os"
 
 type Fileinfo struct {
-	Name string
+	Name       string
 	Permission os.FileMode
-	path string
-	directory string
+	path       string
+	directory  string
 }
 
 // IsExist todo file in current directory

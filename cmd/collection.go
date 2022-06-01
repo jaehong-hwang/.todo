@@ -39,7 +39,7 @@ var (
 			}
 
 			system.AddDirectory(todo.Directory{
-				ID: xid.New().String(),
+				ID:   xid.New().String(),
 				Name: name,
 				Path: dir,
 			})

@@ -70,8 +70,8 @@ func FindFromDirectory(name string, dir string, increase bool) *Fileinfo {
 		path := dir + "/" + name
 		if exist, _ := IsExist(path); exist {
 			fileinfo := &Fileinfo{
-				Name: name,
-				path: path,
+				Name:      name,
+				path:      path,
 				directory: dir,
 			}
 
@@ -81,7 +81,7 @@ func FindFromDirectory(name string, dir string, increase bool) *Fileinfo {
 		if dir == "/" || increase == false {
 			return &Fileinfo{
 				Name:      name,
-				path: fromDir + "/" + name,
+				path:      fromDir + "/" + name,
 				directory: fromDir,
 			}
 		}

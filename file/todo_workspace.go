@@ -45,6 +45,6 @@ func (t *TodoWorkspace) CreateIfNotExist() error {
 	if t.IsExist() == true {
 		return nil
 	}
-	
+
 	return CreateDirectory(t.path)
 }

@@ -29,7 +29,7 @@ func (r *DirectoryResponse) Print(isJson bool) {
 		output = append(output, "id | name | path")
 
 		for _, directory := range r.Directories {
-			output = append(output, directory.ID + " | " + directory.Name + " | " + directory.Path)
+			output = append(output, directory.ID+" | "+directory.Name+" | "+directory.Path)
 		}
 
 		fmt.Println(columnize.SimpleFormat(output))
