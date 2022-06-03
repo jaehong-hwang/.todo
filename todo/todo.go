@@ -38,6 +38,7 @@ type Todo struct {
 	RegistDate  time.Time `json:"regist-date"`
 	DueDate     time.Time `json:"due-date"`
 	Labels      Labels    `json:"label"`
+	Repeat      Repeat    `json:"reaeat"`
 	Level       int       `json:"level"`
 }
 
