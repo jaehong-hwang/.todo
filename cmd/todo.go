@@ -88,6 +88,9 @@ func init() {
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(updateCmd)
 	rootCmd.AddCommand(removeCmd)
+
+	addCmd.PersistentFlags().String("repeat", "", "set repeat information")
+	updateCmd.PersistentFlags().String("repeat", "", "set repeat information")
 }
 
 func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
