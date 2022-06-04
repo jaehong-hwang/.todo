@@ -22,8 +22,7 @@ var (
 			todo.AuthorEmail = system.Author.Email
 			todo.RegistDate = time.Now()
 
-			handleRepeatFlag(c, &todo)
-			setTodoFlagAttr(c, &todo)
+			handleTodoFlags(c, &todo)
 
 			collection.Add(todo)
 
@@ -49,11 +48,7 @@ var (
 				todo.Content = args[0]
 			}
 
-			if err = handleRepeatFlag(c, todo); err != nil {
-				return err
-			}
-
-			if err = setTodoFlagAttr(c, todo); err != nil {
+			if err = handleTodoFlags(c, todo); err != nil {
 				return err
 			}
 
@@ -98,7 +93,7 @@ func init() {
 	updateCmd.PersistentFlags().String("repeat", "", "set repeat information")
 }
 
-func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
+func handleTodoFlags(c *cobra.Command, todo *t.Todo) error {
 	level, err := c.Flags().GetInt("level")
 	if err != nil {
 		return err
@@ -130,10 +125,6 @@ func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
 		todo.DueDate = todoTime
 	}
 
-	return nil
-}
-
-func handleRepeatFlag(c *cobra.Command, todo *t.Todo) error {
 	repeat, err := c.Flags().GetString("repeat")
 	if err != nil {
 		return err
