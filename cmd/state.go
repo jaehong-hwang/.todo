@@ -56,5 +56,7 @@ func updateState(id string, status string) error {
 
 	todo.Status = status
 
+	todoFile.AddLog(todo.ID, "status-update", status)
+
 	return save()
 }

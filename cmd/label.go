@@ -36,6 +36,8 @@ var (
 				return err
 			}
 
+			todoFile.AddLog(todo.ID, "add-label", label.Text)
+
 			return save()
 		},
 	}
@@ -60,6 +62,8 @@ var (
 			if err != nil {
 				return err
 			}
+
+			todoFile.AddLog(todo.ID, "remove-label", labelText)
 
 			return save()
 		},
