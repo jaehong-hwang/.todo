@@ -10,4 +10,5 @@ var errors = map[string]string{
 	"label_already_exists": "${label} is already exists label",
 	"label_not_found":      "${label} label not found",
 	"sort_method_invalid":  "${sort} is invalid order method, you can sort only `regist-date`, `due-date`, `level`. and default value `regist-date`",
+	"repeat_set_only_one":  "monthly, weekly, daily flags are can only one use",
 }
