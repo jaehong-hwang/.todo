@@ -22,6 +22,7 @@ var (
 			todo.AuthorEmail = system.Author.Email
 			todo.RegistDate = time.Now()
 
+			handleRepeatFlag(c, &todo)
 			setTodoFlagAttr(c, &todo)
 
 			collection.Add(todo)
@@ -46,6 +47,10 @@ var (
 
 			if len(args) > 0 && strings.TrimSpace(args[0]) != "" {
 				todo.Content = args[0]
+			}
+
+			if err = handleRepeatFlag(c, todo); err != nil {
+				return err
 			}
 
 			if err = setTodoFlagAttr(c, todo); err != nil {
@@ -123,6 +128,20 @@ func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
 		}
 
 		todo.DueDate = todoTime
+	}
+
+	return nil
+}
+
+func handleRepeatFlag(c *cobra.Command, todo *t.Todo) error {
+	repeat, err := c.Flags().GetString("repeat")
+	if err != nil {
+		return err
+	}
+
+	todo.Repeat = t.Repeat{
+		Types: repeat,
+		Data:  nil,
 	}
 
 	return nil

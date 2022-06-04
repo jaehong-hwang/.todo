@@ -7,6 +7,6 @@ const (
 )
 
 type Repeat struct {
-	types string
-	data  []string
+	Types string
+	Data  []string
 }
