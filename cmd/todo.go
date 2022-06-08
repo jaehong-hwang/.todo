@@ -29,6 +29,8 @@ var (
 
 			collection.Add(todo)
 
+			todoFile.AddLog(todo.ID, "regist", "")
+
 			return save()
 		},
 	}
@@ -54,6 +56,8 @@ var (
 			if err = handleTodoFlags(c, todo); err != nil {
 				return err
 			}
+
+			todoFile.AddLog(todo.ID, "updated", "")
 
 			return save()
 		},
@@ -81,6 +85,8 @@ var (
 			}
 
 			collection.Remove(id)
+
+			todoFile.AddLog(todo.ID, "removed", "")
 
 			return save()
 		},

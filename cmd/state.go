@@ -55,12 +55,8 @@ func updateState(id string, status string) error {
 	}
 
 	todo.Status = status
-	content, err := collection.GetTodosJSONString()
-	if err != nil {
-		return err
-	}
 
-	todoFile.FillContent(content)
+	todoFile.AddLog(todo.ID, "status-update", status)
 
-	return nil
+	return save()
 }

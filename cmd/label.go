@@ -12,7 +12,7 @@ var (
 	}
 
 	labelAddCmd = &cobra.Command{
-		Use:   "add-label",
+		Use:   "add",
 		Short: "add label to todo",
 		Args:  requireArgs,
 		RunE: func(c *cobra.Command, args []string) error {
@@ -36,12 +36,14 @@ var (
 				return err
 			}
 
+			todoFile.AddLog(todo.ID, "add-label", label.Text)
+
 			return save()
 		},
 	}
 
 	labelRemoveCmd = &cobra.Command{
-		Use:   "remove-label",
+		Use:   "remove",
 		Short: "remove label from todo",
 		Args:  requireArgs,
 		RunE: func(c *cobra.Command, args []string) error {
@@ -60,6 +62,8 @@ var (
 			if err != nil {
 				return err
 			}
+
+			todoFile.AddLog(todo.ID, "remove-label", labelText)
 
 			return save()
 		},

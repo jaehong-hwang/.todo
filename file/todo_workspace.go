@@ -48,3 +48,7 @@ func (t *TodoWorkspace) CreateIfNotExist() error {
 
 	return CreateDirectory(t.path)
 }
+
+func (t *TodoWorkspace) AddLog(id string, types string, data string) error {
+	return nil
+}
