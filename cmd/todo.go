@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jaehong-hwang/todo/errors"
 	t "github.com/jaehong-hwang/todo/todo"
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,9 @@ var (
 			todo.AuthorEmail = system.Author.Email
 			todo.RegistDate = time.Now()
 
-			setTodoFlagAttr(c, &todo)
+			if err := handleTodoFlags(c, &todo); err != nil {
+				return err
+			}
 
 			collection.Add(todo)
 
@@ -48,7 +51,7 @@ var (
 				todo.Content = args[0]
 			}
 
-			if err = setTodoFlagAttr(c, todo); err != nil {
+			if err = handleTodoFlags(c, todo); err != nil {
 				return err
 			}
 
@@ -88,9 +91,14 @@ func init() {
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(updateCmd)
 	rootCmd.AddCommand(removeCmd)
+
+	for _, statuses := range t.RepeatStatuses {
+		addCmd.PersistentFlags().String(statuses, "", "set repeat "+statuses+" information")
+		updateCmd.PersistentFlags().String(statuses, "", "set repeat "+statuses+" information")
+	}
 }
 
-func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
+func handleTodoFlags(c *cobra.Command, todo *t.Todo) error {
 	level, err := c.Flags().GetInt("level")
 	if err != nil {
 		return err
@@ -120,6 +128,26 @@ func setTodoFlagAttr(c *cobra.Command, todo *t.Todo) error {
 		}
 
 		todo.DueDate = todoTime
+	}
+
+	for _, statuses := range t.RepeatStatuses {
+		repeat, err := c.Flags().GetString(statuses)
+		if err != nil {
+			return err
+		}
+
+		if repeat == "" {
+			continue
+		}
+
+		if todo.Repeat != nil {
+			return errors.New("repeat_set_only_one")
+		}
+
+		todo.Repeat = &t.Repeat{
+			Types: statuses,
+			Data:  strings.Split(repeat, ","),
+		}
 	}
 
 	return nil
